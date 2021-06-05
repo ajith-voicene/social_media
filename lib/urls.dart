@@ -1,0 +1,10 @@
+String social = "https://socialmedia.viarchtechnologies.com/api/v1/auth/social";
+String my_Profile_url = "https://socialmedia.viarchtechnologies.com/api/v1/my/profile";
+String logout_url = "https://socialmedia.viarchtechnologies.com/api/v1/auth/logout";
+String Create_Post = "https://socialmedia.viarchtechnologies.com/api/v1/post/create";
+String Timeline_url="https://socialmedia.viarchtechnologies.com/api/v1/user/timeline";
+String View_all_Users="https://socialmedia.viarchtechnologies.com/api/v1/view/users/all";
+String single_user="https://socialmedia.viarchtechnologies.com/api/v1/view/user/";
+String react_postss="https://socialmedia.viarchtechnologies.com/api/v1/post/react";
+String comment_post="https://socialmedia.viarchtechnologies.com/api/v1/post/comment/create";
+String get_commentss="https://socialmedia.viarchtechnologies.com/api/v1/user/timeline/comment/";
