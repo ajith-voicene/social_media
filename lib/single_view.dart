@@ -1,41 +1,26 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:chewie/chewie.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media/Home.dart';
-import 'package:social_media/create_post.dart';
-import 'package:social_media/timeline.dart';
-import 'package:video_player/video_player.dart';
 
-import 'Homepages.dart';
+import 'timeline.dart';
 import 'urls.dart';
 
-void main() {
-  runApp(single_view());
-}
+class SingleView extends StatefulWidget {
+  const SingleView({ Key key }) : super(key: key);
 
-
-
-class single_view extends StatefulWidget {
   @override
-  single_view_State createState() {
-    return new single_view_State();
-  }
+  _SingleViewState createState() => _SingleViewState();
 }
-class single_view_State extends State<single_view> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _textcntrl = TextEditingController();
-  final _commentcntrl =TextEditingController();
-  String profile_photo_url,comments,first_attachment_type,post_user_photo,Post_Id,user_name,content,first_attachment_url,likes,is_liked,type="0";
-  VideoPlayerController _videoPlayerController1;
-  ChewieController _chewieController;
+
+class _SingleViewState extends State<SingleView> {
+  
+  String profilePhotoUrl,comments,first_attachment_type,post_user_photo,Post_Id,user_name,content,first_attachment_url,likes,is_liked,type="0";
+  
   Future getnames() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    profile_photo_url = prefs.getString('profile_photo_url');
+    profilePhotoUrl = prefs.getString('profile_photo_url');
     post_user_photo = prefs.getString('post_user_photo');
     Post_Id = prefs.getString('Post_Id');
     post_user_photo = prefs.getString('post_user_photo');
@@ -47,25 +32,14 @@ class single_view_State extends State<single_view> {
     comments=prefs.getString('comments');
     first_attachment_type=prefs.getString('first_attachment_type');
 
-    setState(() {
-      profile_photo_url=profile_photo_url;
-      post_user_photo = post_user_photo;
-      Post_Id=Post_Id;
-      user_name=user_name;
-      content=content;
-      first_attachment_url=first_attachment_url;
-      likes=likes;
-      is_liked=is_liked;
-      comments=comments;
-      first_attachment_type=first_attachment_type;
-    });
+    
   }
   // ignore: missing_return
   Future<bool> _onWillPop() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return Timeline();
+          return TimeLine();
         },
       ),
     );
@@ -77,29 +51,26 @@ class single_view_State extends State<single_view> {
   }
   @override
   void dispose() {
-    _videoPlayerController1.dispose();
-    // _videoPlayerController2.dispose();
-    _chewieController.dispose();
     super.dispose();
   }
   @override
   Widget build(BuildContext context) {
-    if(first_attachment_type=="video/mp4") {
-      _videoPlayerController1 =
-          VideoPlayerController.network(
-              first_attachment_url);
-      _chewieController = ChewieController(
-        videoPlayerController: _videoPlayerController1,
-        aspectRatio: 3 / 2,
-        autoPlay: true,
-        looping: false,
-      );
-    }
-    if(content==null){
-      content=" ";
-    }else{
-      content=content;
-    }
+    // if(first_attachment_type=="video/mp4") {
+    //   _videoPlayerController1 =
+    //       VideoPlayerController.network(
+    //           first_attachment_url);
+    //   _chewieController = ChewieController(
+    //     videoPlayerController: _videoPlayerController1,
+    //     aspectRatio: 3 / 2,
+    //     autoPlay: true,
+    //     looping: false,
+    //   );
+    // }
+    // if(content==null){
+    //   content=" ";
+    // }else{
+    //   content=content;
+    // }
     return  WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -110,7 +81,7 @@ class single_view_State extends State<single_view> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
-                        return Timeline();
+                        return TimeLine();
                       },
                     ),
                   );
@@ -157,9 +128,9 @@ SizedBox(height: 10,),
 
                     Container(
                       height: 400,
-                      child: Chewie(
-                        controller: _chewieController,
-                      ),
+                      // child: Chewie(
+                      //   controller: _chewieController,
+                      // ),
                     ):
                     Container(
                       height: 0,
@@ -188,49 +159,49 @@ SizedBox(height: 10,),
     print("post_id==");
     print(post_id);
     print(type);
-    final response = await http.post(react_postss,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        body: jsonEncode({
-          "post_id": post_id,
-          "type":type,
+    // final response = await http.post(react_postss,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Accept': 'application/json',
+    //       'Authorization': 'Bearer $token'
+    //     },
+    //     body: jsonEncode({
+    //       "post_id": post_id,
+    //       "type":type,
 
-        }));
+    //     }));
 
-    Map<String, dynamic> responseJson = json.decode(response.body);
-    var message, success, user_type, name;
-    message = responseJson["message"];
-    success = responseJson["success"];
+    // Map<String, dynamic> responseJson = json.decode(response.body);
+    // var message, success, user_type, name;
+    // message = responseJson["message"];
+    // success = responseJson["success"];
 
-    if (success == true) {
-      print('RETURNING: ' + response.body);
-      Fluttertoast.showToast(
-          msg: message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
+    // if (success == true) {
+    //   print('RETURNING: ' + response.body);
+    //   Fluttertoast.showToast(
+    //       msg: message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
 
 
-    } else {
-      Fluttertoast.showToast(
-          msg: message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
+    // } else {
+    //   Fluttertoast.showToast(
+    //       msg: message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
 
-      throw Exception('Failed to load post');
-    }
+    //   throw Exception('Failed to load post');
+    // }
   }
 }
 

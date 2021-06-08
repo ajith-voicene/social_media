@@ -3,41 +3,27 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
-import 'package:social_media/Homepages.dart';
-import 'package:social_media/profile_api.dart';
-import 'package:social_media/timeline.dart';
-import 'urls.dart';
-
-void main() => runApp(new MaterialApp(
-    home: new profile()));
 
 
+class Profile extends StatefulWidget {
+  const Profile({ Key key }) : super(key: key);
 
-
-class profile extends StatefulWidget {
   @override
-  profile_State createState() {
-    return new profile_State();
-  }
+  _ProfileState createState() => _ProfileState();
 }
 
-class profile_State extends State<profile> {
+class _ProfileState extends State<Profile> {
+  
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _autoValidate = false;
+ 
   File _image;
-  String name,email, base64Image,profile_photo_url;
+  String name,email, base64Image,profilePhotoUrl;
   final _namecntrl = TextEditingController();
   final _usercntrl = TextEditingController();
 
-  // ignore: missing_return
-  Future<bool> _onWillPop() {
-
-   Navigator.of(context).pop();
-  }
 
   @override
   void initState() {
-    my_profile();
     getnames();
     super.initState();
 
@@ -47,13 +33,8 @@ class profile_State extends State<profile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     name = prefs.getString('Name');
      email = prefs.getString('EmailId');
-    profile_photo_url=prefs.getString('profile_photo_url');
-    setState(() {
-      name=name;
-      email=email;
-      profile_photo_url=profile_photo_url;
-      print(name);
-    });
+    profilePhotoUrl=prefs.getString('profile_photo_url');
+   
   }
   @override
   Widget build(BuildContext context) {
@@ -70,79 +51,75 @@ class profile_State extends State<profile> {
       _usercntrl.value=TextEditingValue(text: email,selection: TextSelection.collapsed(offset: email.length));
 
     }
-    if(profile_photo_url==null){
-      profile_photo_url="https://picsum.photos/250?image=9";
+    if(profilePhotoUrl==null){
+      profilePhotoUrl="https://picsum.photos/250?image=9";
     }else{
-      profile_photo_url=profile_photo_url;
-    }
-    return new WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        body: ListView(
-          shrinkWrap: true,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 30,
-                ),
-                Center(
-                  child: GestureDetector(
-                    onTap: () {
-                    },
-                    child: CircleAvatar(
-                      radius: 55,
-                      backgroundColor: Colors.blue,
-                      child: _image != null
-                          ? ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.file(
-                          _image,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                          : Container(
-                        decoration: new BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          image: new DecorationImage(
-                            image: NetworkImage(
-                                profile_photo_url),
-                            fit: BoxFit.cover,
-
-                          ),),
+      }
+    return Scaffold(
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: 30,
+              ),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                  },
+                  child: CircleAvatar(
+                    radius: 55,
+                    backgroundColor: Colors.blue,
+                    child: _image != null
+                        ? ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.file(
+                        _image,
                         width: 100,
                         height: 100,
-                        // child: Icon(
-                        //   Icons.camera_alt,
-                        //   color: Colors.grey[800],
-                        // ),
+                        fit: BoxFit.cover,
                       ),
+                    )
+                        : Container(
+                      decoration: new BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        image: new DecorationImage(
+                          image: NetworkImage(
+                              profilePhotoUrl),
+                          fit: BoxFit.cover,
+
+                        ),),
+                      width: 100,
+                      height: 100,
+                      // child: Icon(
+                      //   Icons.camera_alt,
+                      //   color: Colors.grey[800],
+                      // ),
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 15,
-                ),
-                new Form(
-                  key: _formKey,
-                  child: FormUI(),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              new Form(
+                key: _formKey,
+                child: formUI(),
+              ),
+              SizedBox(
+                height: 30,
+              ),
 
-              ],
-            ),
-          ],
-        ),
-
+            ],
+          ),
+        ],
       ),
+
     );
   }
-  Widget FormUI() {
+  Widget formUI() {
     return Padding(
       padding: const EdgeInsets.all(40.0),
       child: new Column(

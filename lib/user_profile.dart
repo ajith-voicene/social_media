@@ -1,12 +1,12 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
-import 'package:social_media/Homepages.dart';
-import 'package:social_media/profile_api.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'urls.dart';
 
 void main() {
@@ -27,9 +27,9 @@ class user_profile extends StatefulWidget {
 
 class user_profile_State extends State<user_profile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _autoValidate = false;
+ 
   File _image;
-  String user_id,user_name,user_email,user_photo;
+  String userId,userName,userEmail,userPhoto;
   final _namecntrl = TextEditingController();
   final _usercntrl = TextEditingController();
 
@@ -48,37 +48,31 @@ class user_profile_State extends State<user_profile> {
 
   Future getnames() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    user_id = prefs.getString('User_Id');
-    user_name=prefs.getString('User_Name');
-    user_email=prefs.getString('User_EmailId');
-    user_photo=prefs.getString('User_profile_photo_url');
-    setState(() {
-      user_id=user_id;
-      user_name=user_name;
-      user_email=user_email;
-      user_photo=user_photo;
-      print(user_id);
-    });
+    userId = prefs.getString('User_Id');
+    userName=prefs.getString('User_Name');
+    userEmail=prefs.getString('userEmailId');
+    userPhoto=prefs.getString('User_profile_photo_url');
+    
   }
   @override
   Widget build(BuildContext context) {
-    if(user_name==null){
-      user_name=" ";
+    if(userName==null){
+      userName=" ";
     }
     else{
-      _namecntrl.value=TextEditingValue(text: user_name,selection: TextSelection.collapsed(offset: user_name.length),);
-    }
-    if(user_email==null){
-      user_email=" ";
+      _namecntrl.value=TextEditingValue(text: userName,selection: TextSelection.collapsed(offset: userName.length),);
+    
+    if(userEmail==null){
+      userEmail=" ";
     }
     else{
-      _usercntrl.value=TextEditingValue(text: user_email,selection: TextSelection.collapsed(offset: user_email.length));
+      _usercntrl.value=TextEditingValue(text: userEmail,selection: TextSelection.collapsed(offset: userEmail.length));
 
     }
-    if(user_photo==null){
-      user_photo="https://picsum.photos/250?image=9";
+    if(userPhoto==null){
+      userPhoto="https://picsum.photos/250?image=9";
     }else{
-      user_photo=user_photo;
+      userPhoto=userPhoto;
     }
     return  WillPopScope(
         onWillPop: _onWillPop,
@@ -114,7 +108,7 @@ class user_profile_State extends State<user_profile> {
                         borderRadius: BorderRadius.circular(50),
                         image: new DecorationImage(
                           image: NetworkImage(
-                              user_photo),
+                              userPhoto),
                           fit: BoxFit.cover,
 
                         ),),
@@ -132,7 +126,7 @@ class user_profile_State extends State<user_profile> {
                 ),
                 new Form(
                   key: _formKey,
-                  child: FormUI(),
+                  child: formUI(),
                 ),
                 SizedBox(
                   height: 30,
@@ -144,9 +138,9 @@ class user_profile_State extends State<user_profile> {
 
         ),
       );
-
+    }
   }
-  Widget FormUI() {
+  Widget formUI() {
     return Padding(
       padding: const EdgeInsets.all(40.0),
       child: new Column(
@@ -271,27 +265,27 @@ Navigator.pop(context);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("Token");
-    user_id = prefs.getString('User_Id');
+    userId = prefs.getString('User_Id');
     print("token123");
     print(token);
-    final response = await http.get(
-      single_user+user_id,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-    );
-    Map<String, dynamic> responseJson = json.decode(response.body);
-    print(responseJson);
-    var message,success;
-    message = responseJson["message"];
-    success = responseJson["success"];
-    if (success == true) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('User_Name', responseJson['data']['name']);
-      prefs.setString('User_EmailId', responseJson['data']['email']);
-      prefs.setString('User_profile_photo_url', responseJson['data']['profile_photo_url']);
+    // final response = await http.get(
+    //   single_user+userId,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json',
+    //     'Authorization': 'Bearer $token'
+    //   },
+    // );
+    // Map<String, dynamic> responseJson = json.decode(response.body);
+    // print(responseJson);
+    // var message,success;
+    // message = responseJson["message"];
+    // success = responseJson["success"];
+    // if (success == true) {
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   prefs.setString('User_Name', responseJson['data']['name']);
+    //   prefs.setString('userEmailId', responseJson['data']['email']);
+    //   prefs.setString('User_profile_photo_url', responseJson['data']['profile_photo_url']);
       // print('RETURNING: ' + response.body);
       // Fluttertoast.showToast(
       //     msg:message,
@@ -305,19 +299,19 @@ Navigator.pop(context);
 
 
 
-    } else {
-      Fluttertoast.showToast(
-          msg:message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
-      throw Exception('Failed to load post');
+    // } else {
+    //   Fluttertoast.showToast(
+    //       msg:message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
+    //   throw Exception('Failed to load post');
 
-    }
+    // }
   }
 
 }

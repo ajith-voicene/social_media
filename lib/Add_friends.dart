@@ -1,25 +1,21 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'Homepages.dart';
-import 'urls.dart';
+import 'common_widgets/common_button.dart';
 void main() => runApp(new MaterialApp(
-    home: new Add_friends()));
+    home: new AddFriends()));
 
 
 
 
-class Add_friends extends StatefulWidget {
+class AddFriends extends StatefulWidget {
+  const AddFriends({ Key key }) : super(key: key);
+
   @override
-  Add_friends_State createState() {
-    return new Add_friends_State();
-  }
+  _AddFriendsState createState() => _AddFriendsState();
 }
 
-class Add_friends_State extends State<Add_friends> {
+class _AddFriendsState extends State<AddFriends> {
+
 
 
   @override
@@ -92,20 +88,17 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                                  child:   CommonButton(
+                                    
                                     color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                    label: 
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
+                                     
+                                    
                                   ),
                                 ),
                               ]),
@@ -171,20 +164,16 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                                  child:   CommonButton(
                                     color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                    label:
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
+                                      
+                                    
                                   ),
                                 ),
                               ]),
@@ -250,20 +239,15 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                                  child:   CommonButton(
                                     color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                    label: 
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
+                                     
                                   ),
                                 ),
                               ]),
@@ -329,20 +313,15 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                                  child:   CommonButton(
                                     color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                   label: 
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
+                                     
                                   ),
                                 ),
                               ]),
@@ -408,20 +387,15 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                                  child:   CommonButton(
                                     color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                    label: 
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
+                                     
                                   ),
                                 ),
                               ]),
@@ -487,20 +461,14 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                                  child:   CommonButton(
                                     color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                    label: 
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ]),
@@ -566,20 +534,14 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                                  child:   CommonButton(
                                     color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                    label: 
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ]),
@@ -645,20 +607,14 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                                  child:   CommonButton(
                                     color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                    label: 
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ]),
@@ -724,20 +680,15 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
-                                    color: Colors.blue[900],
+                                  child:   CommonButton(
+                                   color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                    label: 
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
+                                     
                                   ),
                                 ),
                               ]),
@@ -803,20 +754,14 @@ class Add_friends_State extends State<Add_friends> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
-                                  child:   RaisedButton(
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                                  child:   CommonButton(
                                     color: Colors.blue[900],
                                     onPressed: () {
 
                                       // _validateInputs();
                                     },
-                                    child: Text(
+                                    label:
                                       "Add Friend",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ]),

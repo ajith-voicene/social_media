@@ -1,19 +1,15 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media/create_post.dart';
+import 'package:social_media/common_widgets/common_button.dart';
 import 'package:social_media/profile.dart';
 import 'package:social_media/single_view.dart';
-import 'package:video_player/video_player.dart';
 
-import 'user_profile.dart';
 import 'comment_page.dart';
+import 'create_post.dart';
+import 'user_profile.dart';
 import 'urls.dart';
 class Data {
   final String user_name;
@@ -71,16 +67,16 @@ void main() => runApp(new MaterialApp(
 
 
 class Home extends StatefulWidget {
+  const Home({ Key key }) : super(key: key);
+
   @override
-  Home_State createState() {
-    return new Home_State();
-  }
+  _HomeState createState() => _HomeState();
 }
-class Home_State extends State<Home> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+class _HomeState extends State<Home> {
+  
   final _textcntrl = TextEditingController();
- // final _commentcntrl =TextEditingController();
-  String profile_photo_url,type="0",my_id;
+  String profilePhotoUrl,type="0",myId;
 
   MaterialColor color;
   Future<bool> _onBackPressed() {
@@ -88,13 +84,7 @@ class Home_State extends State<Home> {
     Navigator.pop(context);
   }
   Future getnames() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    profile_photo_url = prefs.getString('profile_photo_url');
-    my_id = prefs.getString('My_Id');
-    setState(() {
-      profile_photo_url = profile_photo_url;
-      my_id=my_id;
-    });
+    
   }
 
   @override
@@ -105,11 +95,11 @@ class Home_State extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    if (profile_photo_url == null) {
-      profile_photo_url = "https://picsum.photos/250?image=9";
-    } else {
-      profile_photo_url = profile_photo_url;
-    }
+    // if (profile_photo_url == null) {
+    //   profile_photo_url = "https://picsum.photos/250?image=9";
+    // } else {
+    //   profile_photo_url = profile_photo_url;
+    // }
     return  WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
@@ -134,7 +124,7 @@ class Home_State extends State<Home> {
 
                                       image: new DecorationImage(
                                         image: NetworkImage(
-                                            profile_photo_url),
+                                            profilePhotoUrl),
                                         fit: BoxFit.cover,
                                       )),
                                   // width: 60,
@@ -150,7 +140,7 @@ class Home_State extends State<Home> {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) {
-                                        return create_post();
+                                        return CreatePost();
                                       },
                                     ),
                                   );
@@ -203,7 +193,7 @@ class Home_State extends State<Home> {
                         ]),
                     SizedBox(height: 5,),
                     FutureBuilder<List<Data>>(
-                      future: my_home(),
+                      future: myHome(),
                       builder: (ctx, snapshot) {
                         if (snapshot.hasData) {
                           List data = snapshot.data;
@@ -213,7 +203,6 @@ class Home_State extends State<Home> {
                               physics: NeverScrollableScrollPhysics(),
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, index) {
-                                var item = snapshot.data[index];
 
                                 return Container(
                                   margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -272,11 +261,11 @@ class Home_State extends State<Home> {
                                                           onTap:() async {
                                                             SharedPreferences prefs = await SharedPreferences.getInstance();
                                                             prefs.setString('User_Id',snapshot.data[index].user_id.toString() );
-                                                            if(my_id==snapshot.data[index].user_id.toString()){
+                                                            if(myId==snapshot.data[index].user_id.toString()){
                                                               Navigator.of(context).push(
                                                                 MaterialPageRoute(
                                                                   builder: (context) {
-                                                                    return profile();
+                                                                    return Profile();
                                                                   },
                                                                 ),
                                                               );
@@ -344,7 +333,7 @@ class Home_State extends State<Home> {
                                        prefs.setString('content',snapshot.data[index].content);
                                        prefs.setString('first_attachment_url',snapshot.data[index].first_attachment_url);
                                        prefs.setString('first_attachment_type',snapshot.data[index].first_attachment_type);
-                                       Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => single_view()), (r) => false);
+                                       Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => SingleView()), (r) => false);
                                      },
                                      child: Image.network(
                                          snapshot.data[index]
@@ -368,7 +357,7 @@ class Home_State extends State<Home> {
                                             prefs.setString('content',snapshot.data[index].content);
                                             prefs.setString('first_attachment_url',snapshot.data[index].first_attachment_url);
                                             prefs.setString('first_attachment_type',snapshot.data[index].first_attachment_type);
-                                            Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => single_view()), (r) => false);
+                                            Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => SingleView()), (r) => false);
                                           },
                                           child: Container(
                                             height: 250,
@@ -484,7 +473,7 @@ class Home_State extends State<Home> {
                                                   prefs.setString('comments',snapshot.data[index].comments.toString());
                                                   prefs.setString('created_at',snapshot.data[index].created_at);
                                                   prefs.setString('first_attachment_type',snapshot.data[index].first_attachment_type);
-                                                  Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => comment_page()), (r) => false);
+                                                  Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => CommentPage()), (r) => false);
                                                 },
                                                 child: Padding(
                                                   padding: const EdgeInsets
@@ -673,13 +662,10 @@ class Home_State extends State<Home> {
                               ),
                             ),
                             actions: <Widget>[
-                              FlatButton(
-                                child: Text(
+                              CommonButton(
+                                label:
                                   'Go Back',
-                                  style: TextStyle(
-                                    color: Colors.redAccent,
-                                  ),
-                                ),
+                                  
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -710,60 +696,57 @@ class Home_State extends State<Home> {
     );
   }
 
-  Future<List<Data>> my_home() async {
+  Future<List<Data>> myHome() async {
     //replace your restFull API here.
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString("Token");
 
     print('Bearer $token');
-    final response = await http.get(Timeline_url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-    );
-    Map<String, dynamic> responseData = json.decode(response.body);
-    var list = responseData['data'] as List;
-    // print("list====");
-    // print(list);
-    List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
-    return imagesList;
+    // final response = await http.get(Timeline_url,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json',
+    //     'Authorization': 'Bearer $token'
+    //   },
+    // );
+    // Map<String, dynamic> responseData = json.decode(response.body);
+    // var list = responseData['data'] as List;
+    // // print("list====");
+    // // print(list);
+    // List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
+    // return imagesList;
   }
   Future<String> user_profilesss() async { // <------ CHANGED THIS LINE
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("Token");
-    String user_id = prefs.getString('User_Id');
+    String userId;
     print("token123");
-    print(token);
-    print(user_id);
-    final response = await http.get(
-      single_user+user_id,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-    );
-    Map<String, dynamic> responseJson = json.decode(response.body);
-    print(responseJson);
-    var message,success;
-    message = responseJson["message"];
-    success = responseJson["success"];
-    if (success == true) {
-      print('RETURNING: ' + response.body);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('User_Name', responseJson['data']['name']);
-      prefs.setString('User_EmailId', responseJson['data']['email']);
-      prefs.setString('User_profile_photo_url', responseJson['data']['profile_photo_url']);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return user_profile();
-          },
-        ),
-      );
+    
+    // final response = await http.get(
+    //   single_user+userId,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json',
+    //     'Authorization': 'Bearer $token'
+    //   },
+    // );
+    // Map<String, dynamic> responseJson = json.decode(response.body);
+    // print(responseJson);
+    // var message,success;
+    // message = responseJson["message"];
+    // success = responseJson["success"];
+    // if (success == true) {
+    //   print('RETURNING: ' + response.body);
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   prefs.setString('User_Name', responseJson['data']['name']);
+    //   prefs.setString('User_EmailId', responseJson['data']['email']);
+    //   prefs.setString('User_profile_photo_url', responseJson['data']['profile_photo_url']);
+    //   Navigator.of(context).push(
+    //     MaterialPageRoute(
+    //       builder: (context) {
+    //         return user_profile();
+    //       },
+    //     ),
+    //   );
       // print('RETURNING: ' + response.body);
       // Fluttertoast.showToast(
       //     msg:message,
@@ -777,19 +760,19 @@ class Home_State extends State<Home> {
 
 
 
-    } else {
-      Fluttertoast.showToast(
-          msg:message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
-      throw Exception('Failed to load post');
+    // } else {
+    //   Fluttertoast.showToast(
+    //       msg:message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
+    //   throw Exception('Failed to load post');
 
-    }
+    // }
   }
   // Future<List<Datass>> my_image() async {
   //
@@ -855,29 +838,29 @@ class Home_State extends State<Home> {
 
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString("Token");
-    String post_id = pref.getString("Post_Id");
-    print("post_id==");
-    print(post_id);
-    print(type);
-    final response = await http.post(react_postss,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        body: jsonEncode({
-          "post_id": post_id,
-          "type":type,
+    // String post_id = pref.getString("Post_Id");
+    // print("post_id==");
+    // print(post_id);
+    // print(type);
+    // final response = await http.post(react_postss,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Accept': 'application/json',
+    //       'Authorization': 'Bearer $token'
+    //     },
+    //     body: jsonEncode({
+    //       "post_id": post_id,
+    //       "type":type,
 
-        }));
+    //     }));
 
-    Map<String, dynamic> responseJson = json.decode(response.body);
-    var message, success, user_type, name;
-    message = responseJson["message"];
-    success = responseJson["success"];
+    // Map<String, dynamic> responseJson = json.decode(response.body);
+    // var message, success, user_type, name;
+    // message = responseJson["message"];
+    // success = responseJson["success"];
 
-    if (success == true) {
-      print('RETURNING: ' + response.body);
+    // if (success == true) {
+    //   print('RETURNING: ' + response.body);
       // Fluttertoast.showToast(
       //     msg: message,
       //     toastLength: Toast.LENGTH_LONG,
@@ -889,7 +872,7 @@ class Home_State extends State<Home> {
       // );
 
 
-    } else {
+    // } else {
       // Fluttertoast.showToast(
       //     msg: message,
       //     toastLength: Toast.LENGTH_LONG,
@@ -901,7 +884,7 @@ class Home_State extends State<Home> {
       // );
 
       throw Exception('Failed to load post');
-    }
+    // }
   }
     }
 

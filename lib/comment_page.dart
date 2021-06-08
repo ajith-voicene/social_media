@@ -1,117 +1,73 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:chewie/chewie.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media/Home.dart';
-import 'package:social_media/create_post.dart';
-import 'package:social_media/timeline.dart';
-import 'package:video_player/video_player.dart';
+import 'package:social_media/common_widgets/common_button.dart';
 
-import 'Homepages.dart';
+import 'timeline.dart';
 import 'urls.dart';
 class Data {
-  final String created_at;
-  final String user_name;
+  final String createdAt;
+  final String userName;
  final String content;
 
 
-  Data({this.created_at, this.user_name,this.content});
+  Data({this.createdAt, this.userName,this.content});
   factory Data.fromJson(Map<String, dynamic> parsedJson){
     return Data(
-        created_at:parsedJson['created_at'],
-        user_name:parsedJson['user_name'],
+        createdAt:parsedJson['created_at'],
+        userName:parsedJson['user_name'],
         content:parsedJson['content'],
 
     );
 
   }
 }
-void main() {
-  runApp(comment_page());
-}
 
 
+class CommentPage extends StatefulWidget {
+  const CommentPage({ Key key }) : super(key: key);
 
-class comment_page extends StatefulWidget {
   @override
-  comment_page_State createState() {
-    return new comment_page_State();
-  }
+  _CommentPageState createState() => _CommentPageState();
 }
-class comment_page_State extends State<comment_page> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _textcntrl = TextEditingController();
-  final _commentcntrl =TextEditingController();
-  String profile_photo_url,comments,first_attachment_type,created_at,post_user_photo,Post_Id,user_name,content,first_attachment_url,likes,is_liked,type="0";
-  VideoPlayerController _videoPlayerController1;
-  ChewieController _chewieController;
-  Future getnames() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    profile_photo_url = prefs.getString('profile_photo_url');
-    post_user_photo = prefs.getString('post_user_photo');
-    Post_Id = prefs.getString('Post_Id');
-    post_user_photo = prefs.getString('post_user_photo');
-    user_name = prefs.getString('user_name');
-    content = prefs.getString('content');
-    first_attachment_url = prefs.getString('first_attachment_url');
-    likes = prefs.getString('likes');
-    is_liked = prefs.getString('is_liked');
-    comments=prefs.getString('comments');
-    first_attachment_type=prefs.getString('first_attachment_type');
-    created_at=prefs.getString('created_at');
 
-    setState(() {
-      profile_photo_url=profile_photo_url;
-      post_user_photo = post_user_photo;
-      Post_Id=Post_Id;
-      user_name=user_name;
-      content=content;
-      first_attachment_url=first_attachment_url;
-      likes=likes;
-      is_liked=is_liked;
-      comments=comments;
-      first_attachment_type=first_attachment_type;
-      created_at=created_at;
-    });
-  }
-  // ignore: missing_return
+class _CommentPageState extends State<CommentPage> {
+ 
+  // final _textcntrl = TextEditingController();
+  final _commentcntrl =TextEditingController();
+  String profilePhotoUrl,comments,first_attachment_type,created_at,post_user_photo,Post_Id,user_name,content,first_attachment_url,likes,is_liked,type="0";
+ 
+ 
   Future<bool> _onWillPop() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return Timeline();
+          return TimeLine();
         },
       ),
     );
   }
   @override
   void initState() {
-    getnames();
     super.initState();
   }
   @override
   void dispose() {
-    _videoPlayerController1.dispose();
-    // _videoPlayerController2.dispose();
-    _chewieController.dispose();
     super.dispose();
   }
   @override
   Widget build(BuildContext context) {
     if(first_attachment_type=="video/mp4") {
-      _videoPlayerController1 =
-          VideoPlayerController.network(
-              first_attachment_url);
-      _chewieController = ChewieController(
-        videoPlayerController: _videoPlayerController1,
-        aspectRatio: 3 / 2,
-        autoPlay: true,
-        looping: false,
-      );
+      // _videoPlayerController1 =
+      //     VideoPlayerController.network(
+      //         first_attachment_url);
+      // _chewieController = ChewieController(
+      //   videoPlayerController: _videoPlayerController1,
+      //   aspectRatio: 3 / 2,
+      //   autoPlay: true,
+      //   looping: false,
+      // );
     }
     return  WillPopScope(
       onWillPop: _onWillPop,
@@ -122,7 +78,7 @@ class comment_page_State extends State<comment_page> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
-                    return Timeline();
+                    return TimeLine();
                   },
                 ),
               );
@@ -251,9 +207,9 @@ class comment_page_State extends State<comment_page> {
 
                                         Container(
                                           height: 250,
-                                          child: Chewie(
-                                            controller: _chewieController,
-                                          ),
+                                          // child: Chewie(
+                                          //   controller: _chewieController,
+                                          // ),
                                         ):
                                         Container(
                                           height: 0,
@@ -426,7 +382,7 @@ class comment_page_State extends State<comment_page> {
                                                         padding: const EdgeInsets.all(4.0),
                                                         child: Text(
                                                           snapshot.data[index]
-                                                              .user_name,
+                                                              .userName,
                                                           textAlign: TextAlign
                                                               .start,
                                                           style: TextStyle(
@@ -507,13 +463,10 @@ class comment_page_State extends State<comment_page> {
                               ),
                             ),
                             actions: <Widget>[
-                              FlatButton(
-                                child: Text(
+                              CommonButton(
+                                label:
                                   'Go Back',
-                                  style: TextStyle(
-                                    color: Colors.redAccent,
-                                  ),
-                                ),
+                                
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -561,7 +514,7 @@ class comment_page_State extends State<comment_page> {
 
                           image: new DecorationImage(
                             image: NetworkImage(
-                                profile_photo_url),
+                                profilePhotoUrl),
                             fit: BoxFit.cover,
                           )),
                       // width: 60,
@@ -621,7 +574,7 @@ class comment_page_State extends State<comment_page> {
                 onTap: () async {
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs.setString('Post_Id',Post_Id.toString() );
-                  post_comment();
+                  postComment();
                 },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
@@ -637,111 +590,111 @@ class comment_page_State extends State<comment_page> {
   }
 
 
-  Future<String> reaction() async {
+  Future<void> reaction() async {
     // <------ CHANGED THIS LINE
 
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString("Token");
-    String post_id = pref.getString("Post_Id");
+    String postId = pref.getString("Post_Id");
     print("post_id==");
-    print(post_id);
+    print(postId);
     print(type);
-    final response = await http.post(react_postss,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        body: jsonEncode({
-          "post_id": post_id,
-          "type":type,
+    // final response = await http.post(react_postss,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Accept': 'application/json',
+    //       'Authorization': 'Bearer $token'
+    //     },
+    //     body: jsonEncode({
+    //       "post_id": postId,
+    //       "type":type,
 
-        }));
+    //     }));
 
-    Map<String, dynamic> responseJson = json.decode(response.body);
-    var message, success, user_type, name;
-    message = responseJson["message"];
-    success = responseJson["success"];
+    // Map<String, dynamic> responseJson = json.decode(response.body);
+    // var message, success, userType, name;
+    // message = responseJson["message"];
+    // success = responseJson["success"];
 
-    if (success == true) {
-      print('RETURNING: ' + response.body);
-      Fluttertoast.showToast(
-          msg: message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
+    // if (success == true) {
+    //   print('RETURNING: ' + response.body);
+    //   Fluttertoast.showToast(
+    //       msg: message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
 
 
-    } else {
-      Fluttertoast.showToast(
-          msg: message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
+    // } else {
+    //   Fluttertoast.showToast(
+    //       msg: message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
 
-      throw Exception('Failed to load post');
-    }
+    //   throw Exception('Failed to load post');
+    // }
   }
-  Future<String> post_comment() async {
+  Future<void> postComment() async {
     // <------ CHANGED THIS LINE
 
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString("Token");
-    String post_id = pref.getString("Post_Id");
+    String postId = pref.getString("Post_Id");
     print("post_id==");
-    print(post_id);
-    final response = await http.post(comment_post,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        body: jsonEncode({
-          "post_id": post_id,
-          "content":_commentcntrl.text
+    print(postId);
+    // final response = await http.post(comment_post,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Accept': 'application/json',
+    //       'Authorization': 'Bearer $token'
+    //     },
+    //     body: jsonEncode({
+    //       "post_id": postId,
+    //       "content":_commentcntrl.text
 
-        }));
+    //     }));
 
-    Map<String, dynamic> responseJson = json.decode(response.body);
-    var message, success, user_type, name;
-    message = responseJson["message"];
-    success = responseJson["success"];
+    // Map<String, dynamic> responseJson = json.decode(response.body);
+    // var message, success, userType, name;
+    // message = responseJson["message"];
+    // success = responseJson["success"];
 
-    if (success == true) {
-      print('RETURNING: ' + response.body);
-      Fluttertoast.showToast(
-          msg: message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('is_liked',is_liked.toString() );
-      _commentcntrl.clear();
-    } else {
-      Fluttertoast.showToast(
-          msg: message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
+    // if (success == true) {
+    //   print('RETURNING: ' + response.body);
+    //   Fluttertoast.showToast(
+    //       msg: message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   prefs.setString('is_liked',is_liked.toString() );
+    //   _commentcntrl.clear();
+    // } else {
+    //   Fluttertoast.showToast(
+    //       msg: message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
 
-      throw Exception('Failed to load post');
-    }
+    //   throw Exception('Failed to load post');
+    // }
   }
   Future<List<Data>> comment() async {
     //replace your restFull API here.
@@ -749,19 +702,19 @@ class comment_page_State extends State<comment_page> {
     String token= pref.getString("Token");
 
     print('Bearer $token');
-    final response = await http.get(get_commentss+Post_Id,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-    );
-    Map<String, dynamic> responseData = json.decode(response.body);
-    var list = responseData['data'] as List;
-    print("list====");
-    print(list);
-    List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
-    return imagesList;
+    // final response = await http.get(get_commentss+Post_Id,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json',
+    //     'Authorization': 'Bearer $token'
+    //   },
+  //   );
+  //   Map<String, dynamic> responseData = json.decode(response.body);
+  //   var list = responseData['data'] as List;
+  //   print("list====");
+  //   print(list);
+  //   List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
+  //   return imagesList;
 
   }
 }

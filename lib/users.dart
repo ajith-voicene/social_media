@@ -5,15 +5,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/user_profile.dart';
 import 'urls.dart';
 class Data {
-  final String profile_photo_url;
+  final String profilePhotoUrl;
   final String name;
   final int id;
   final String email;
 
-  Data({this.profile_photo_url, this.name,this.id,this.email});
+  Data({this.profilePhotoUrl, this.name,this.id,this.email});
   factory Data.fromJson(Map<String, dynamic> parsedJson){
     return Data(
-      profile_photo_url:parsedJson['profile_photo_url'],
+      profilePhotoUrl:parsedJson['profile_photo_url'],
       name:parsedJson['name'],
       id:parsedJson['id'],
       email: parsedJson['email'],
@@ -35,7 +35,7 @@ class Users extends StatefulWidget {
   }
 }
 class Users_State extends State<Users> {
- String profile_photo_url;
+ String profilePhotoUrl;
 
 
   @override
@@ -73,7 +73,7 @@ class Users_State extends State<Users> {
                                     prefs.setString('User_Id',snapshot.data[index].id.toString() );
                                     prefs.setString('User_Name', snapshot.data[index].name);
                                     prefs.setString('User_EmailId', snapshot.data[index].email);
-                                    prefs.setString('User_profile_photo_url', snapshot.data[index].profile_photo_url);
+                                    prefs.setString('User_profile_photo_url', snapshot.data[index].profilePhotoUrl);
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) {
@@ -105,7 +105,7 @@ class Users_State extends State<Users> {
                                                             image: NetworkImage(
                                                                 snapshot
                                                                     .data[index]
-                                                                    .profile_photo_url),
+                                                                    .profilePhotoUrl),
                                                             fit: BoxFit.cover,
                                                           )),
                                                       // width: 60,
@@ -226,23 +226,23 @@ class Users_State extends State<Users> {
 
   Future<List<Data>> getRequest() async {
     //replace your restFull API here.
-    final SharedPreferences pref = await SharedPreferences.getInstance();
-    String token= pref.getString("Token");
+    // final SharedPreferences pref = await SharedPreferences.getInstance();
+    // String token= pref.getString("Token");
 
-    print('Bearer $token');
-    final response = await http.get(View_all_Users,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-    );
-    Map<String, dynamic> responseData = json.decode(response.body);
-    var list = responseData['data']['data'] as List;
-    print("aaaaaa");
-    print(list);
-    List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
-    return imagesList;
+    // print('Bearer $token');
+    // final response = await http.get(View_all_Users,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json',
+    //     'Authorization': 'Bearer $token'
+    //   },
+    // );
+    // Map<String, dynamic> responseData = json.decode(response.body);
+    // var list = responseData['data']['data'] as List;
+    // print("aaaaaa");
+    // print(list);
+    // List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
+    // return imagesList;
 
   }
 }

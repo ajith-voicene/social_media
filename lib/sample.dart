@@ -1,23 +1,20 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Homepages.dart';
 import 'create_post.dart';
 import 'urls.dart';
-import 'user_profile.dart';
 class Data {
-  final String profile_photo_url;
+  final String profilePhotoUrl;
   final String name;
   final int id;
   final String email;
 
-  Data({this.profile_photo_url, this.name,this.id,this.email});
+  Data({this.profilePhotoUrl, this.name,this.id,this.email});
   factory Data.fromJson(Map<String, dynamic> parsedJson){
     return Data(
-      profile_photo_url:parsedJson['profile_photo_url'],
+      profilePhotoUrl:parsedJson['profile_photo_url'],
       name:parsedJson['name'],
       id:parsedJson['id'],
       email: parsedJson['email'],
@@ -26,20 +23,16 @@ class Data {
 
   }
 }
-void main() => runApp(new MaterialApp(
-    home: new users()));
 
+class Users extends StatefulWidget {
+  const Users({ Key key }) : super(key: key);
 
-
-
-class users extends StatefulWidget {
   @override
-  users_State createState() {
-    return new users_State();
-  }
+  _UsersState createState() => _UsersState();
 }
 
-class users_State extends State<users> {
+class _UsersState extends State<Users> {
+
 
   @override
   void initState() {
@@ -66,7 +59,6 @@ class users_State extends State<users> {
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: snapshot.data.length,
                             itemBuilder: (context, index) {
-                              var item = snapshot.data[index];
                               return   Padding(
                                 padding: const EdgeInsets.all(5.0),
 
@@ -76,11 +68,11 @@ class users_State extends State<users> {
                                     prefs.setString('User_Id',snapshot.data[index].id.toString() );
                                     prefs.setString('User_Name', snapshot.data[index].name);
                                     prefs.setString('User_EmailId', snapshot.data[index].email);
-                                    prefs.setString('User_profile_photo_url', snapshot.data[index].profile_photo_url);
+                                    prefs.setString('User_profile_photo_url', snapshot.data[index].profilePhotoUrl);
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) {
-                                          return create_post();
+                                          return CreatePost();
                                         },
                                       ),
                                     );
@@ -108,7 +100,7 @@ class users_State extends State<users> {
                                                             image: NetworkImage(
                                                                 snapshot
                                                                     .data[index]
-                                                                    .profile_photo_url),
+                                                                    .profilePhotoUrl),
                                                             fit: BoxFit.cover,
                                                           )),
                                                       // width: 60,
@@ -188,7 +180,7 @@ class users_State extends State<users> {
                             ),
                           ),
                           actions: <Widget>[
-                            FlatButton(
+                            TextButton(
                               child: Text(
                                 'Go Back',
                                 style: TextStyle(
@@ -232,24 +224,21 @@ class users_State extends State<users> {
     );
   }
   Future<List<Data>> getRequest() async {
-    //replace your restFull API here.
-    final SharedPreferences pref = await SharedPreferences.getInstance();
-    String token= pref.getString("Token");
 
-    print('Bearer $token');
-    final response = await http.get(View_all_Users,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-    );
-    Map<String, dynamic> responseData = json.decode(response.body);
-    var list = responseData['data']['data'] as List;
-    print("aaaaaa");
-    print(list);
-    List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
-    return imagesList;
+    // print('Bearer $token');
+    // final response = await http.get(View_all_Users,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json',
+    //     'Authorization': 'Bearer $token'
+    //   },
+    // );
+    // Map<String, dynamic> responseData = json.decode(response.body);
+    // var list = responseData['data']['data'] as List;
+    // print("aaaaaa");
+    // print(list);
+    // List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
+    // return imagesList;
 
   }
 }

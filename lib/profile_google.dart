@@ -12,22 +12,16 @@ class Profile_google extends StatefulWidget {
 }
 
 class prof_State extends State<Profile_google> {
-  String name,email,firstname,PhoneNumber,id;
+  String name,email,firstname,phoneNumber,id;
 
   Future getnames() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     name = prefs.getString('G-Name');
-    PhoneNumber = prefs.getString('G-PhoneNumber');
+    phoneNumber = prefs.getString('G-PhoneNumber');
     email = prefs.getString('G-Email');
     id=prefs.getString('G-Id');
     print(name);
-    setState(() {
-      name=name;
-      PhoneNumber=PhoneNumber;
-      email=email;
-      id=id;
-
-    });
+    
   } @override
   void initState() {
     getnames();
@@ -46,10 +40,10 @@ class prof_State extends State<Profile_google> {
     }else{
       email=email;
     }
-    if(PhoneNumber==null){
-      PhoneNumber="phone number=null";
+    if(phoneNumber==null){
+      phoneNumber="phone number=null";
     }else{
-      PhoneNumber=PhoneNumber;
+      phoneNumber=phoneNumber;
     }
     if(id==null){
       id=" ";
@@ -67,7 +61,7 @@ class prof_State extends State<Profile_google> {
           children: [
             Text(name),
             Text(email),
-            Text(PhoneNumber),
+            Text(phoneNumber),
             Text(id),
           ],
         ),

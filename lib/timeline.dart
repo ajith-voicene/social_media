@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media/profile.dart';
 
 import 'Add_friends.dart';
 import 'Drawers.dart';
 import 'Home.dart';
+import 'profile.dart';
 import 'users.dart';
 
-void main() => runApp(new MaterialApp(
-  home: new Timeline(),
-));
 
+class TimeLine extends StatefulWidget {
+  const TimeLine({ Key key }) : super(key: key);
 
-class Timeline extends StatefulWidget {
   @override
-  Timeline_State createState() {
-    return new Timeline_State();
-  }
+  _TimeLineState createState() => _TimeLineState();
 }
 
-class Timeline_State extends State<Timeline> {
+class _TimeLineState extends State<TimeLine> {
+
 
   @override
   void initState() {
@@ -76,9 +72,9 @@ class Timeline_State extends State<Timeline> {
          child: TabBarView(
             children: [
               Container(child: Home()),
-              Container(child: profile()),
+              Container(child: Profile()),
               Container(child: Users()),
-              Container(child: Add_friends()),
+              Container(child: AddFriends()),
               Container(child: Drawers()),
             ],
           ),

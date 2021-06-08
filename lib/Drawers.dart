@@ -4,23 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Homepages.dart';
 import 'urls.dart';
-void main() => runApp(new MaterialApp(
-    home: new Drawers()));
 
 class Drawers extends StatefulWidget {
+  const Drawers({ Key key }) : super(key: key);
+
   @override
-  Drawers_State createState() {
-    return new Drawers_State();
-  }
+  _DrawersState createState() => _DrawersState();
 }
 
-class Drawers_State extends State<Drawers> {
+class _DrawersState extends State<Drawers> {
+  
 
   showAlertDialog(BuildContext context) {
 
-    // Create AlertDialog
     AlertDialog alert = AlertDialog(
       title: Center(child: Text("Logout Application", style: TextStyle(
           color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),)),
@@ -111,52 +108,52 @@ class Drawers_State extends State<Drawers> {
     String token = prefs.getString("Token");
     print("token123");
     print(token);
-    final response = await http.get(
-      logout_url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-    );
-    Map<String, dynamic> responseJson = json.decode(response.body);
-    print(responseJson);
-    var message,success;
-    message = responseJson["message"];
-    success = responseJson["success"];
-    if (success == true) {
+    // final response = await http.get(
+    //   logout_url,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json',
+    //     'Authorization': 'Bearer $token'
+    //   },
+    // );
+    // Map<String, dynamic> responseJson = json.decode(response.body);
+    // print(responseJson);
+    // var message,success;
+    // message = responseJson["message"];
+    // success = responseJson["success"];
+    // if (success == true) {
 
-      Fluttertoast.showToast(
-          msg:message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
+    //   Fluttertoast.showToast(
+    //       msg:message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return Homepages();
-          },
-        ),
-      );
+    //   Navigator.of(context).push(
+    //     MaterialPageRoute(
+    //       builder: (context) {
+    //         return Homepages();
+    //       },
+    //     ),
+    //   );
 
-    } else {
-      Fluttertoast.showToast(
-          msg:message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
-      throw Exception('Failed to load post');
+    // } else {
+    //   Fluttertoast.showToast(
+    //       msg:message,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIos: 1,
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white,
+    //       fontSize: 14.0
+    //   );
+    //   throw Exception('Failed to load post');
 
-    }
+    // }
   }
 }
 

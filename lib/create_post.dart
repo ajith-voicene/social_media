@@ -1,30 +1,21 @@
-import 'dart:convert';
+
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media/Home.dart';
-import 'package:video_player/video_player.dart';
-
-import 'Homepages.dart';
-import 'timeline.dart';
-import 'urls.dart';
-void main() => runApp(new MaterialApp(
-    home: new create_post()));
 
 
+class CreatePost extends StatefulWidget {
+  const CreatePost({ Key key }) : super(key: key);
 
-
-class create_post extends StatefulWidget {
   @override
-  create_State createState() {
-    return new create_State();
-  }
+  _CreatePostState createState() => _CreatePostState();
 }
 
-class create_State extends State<create_post> {
+class _CreatePostState extends State<CreatePost> {
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _textcntrl = TextEditingController();
   String savedImage;
@@ -32,54 +23,45 @@ class create_State extends State<create_post> {
   File file;
   File _video;
   File _image;
-  VideoPlayerController _videoPlayerController;
   String base64Image;
-  String _myActivity;
+  String myActivity;
   String fileName;
   File _imageFile;
   File _storedImage;
   final picker = ImagePicker();
-  String profile_photo_url;
-  Future getnames() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    profile_photo_url=prefs.getString('profile_photo_url');
-    setState(() {
-      profile_photo_url=profile_photo_url;
-
-    });
-  }  @override
+  String profilePhotoUrl;
+   @override
   void initState() {
-    getnames();
     super.initState();
 
   }
   _imgFromCamera() async {
-    File image = await ImagePicker.pickImage(
-        source: ImageSource.camera, imageQuality: 50
-    );
+    // File image = picker.getImage(
+    //     source: ImageSource.camera, imageQuality: 50
+    // );
 
-    setState(() {
-      base64Image = base64Encode(image.readAsBytesSync());
-      _image = image;
-    });
+    // setState(() {
+    //   base64Image = base64Encode(image.readAsBytesSync());
+    //   _image = image;
+    // });
   }
   _pickVideo() async {
-    File video = await ImagePicker.pickVideo(source: ImageSource.gallery);
-    _video = video;
-    _videoPlayerController = VideoPlayerController.file(_video)..initialize().then((_) {
-      setState(() { });
-      _videoPlayerController.play();
-    });
+    // File video = await ImagePicker.pickVideo(source: ImageSource.gallery);
+    // _video = video;
+    // _videoPlayerController = VideoPlayerController.file(_video)..initialize().then((_) {
+    //   setState(() { });
+    //   _videoPlayerController.play();
+    // });
   }
   _imgFromGallery() async {
-    File image = await  ImagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50
-    );
+    // File image = await  ImagePicker.pickImage(
+    //     source: ImageSource.gallery, imageQuality: 50
+    // );
 
-    setState(() {
-      base64Image = base64Encode(image.readAsBytesSync());
-      _image = image;
-    });
+    // setState(() {
+    //   base64Image = base64Encode(image.readAsBytesSync());
+    //   _image = image;
+    // });
 
   }
   void _showPicker(context) {
@@ -122,11 +104,11 @@ class create_State extends State<create_post> {
   }
   @override
   Widget build(BuildContext context) {
-    if(profile_photo_url==null){
-      profile_photo_url="https://picsum.photos/250?image=9";
-    }else{
-      profile_photo_url=profile_photo_url;
-    }
+    // if(profile_photo_url==null){
+    //   profile_photo_url="https://picsum.photos/250?image=9";
+    // }else{
+    //   profile_photo_url=profile_photo_url;
+    // }
     final screenWidth = MediaQuery.of(context).size.width/1;
     return MaterialApp(
         home: Scaffold(
@@ -175,7 +157,7 @@ class create_State extends State<create_post> {
 
                                   image: new DecorationImage(
                                     image: NetworkImage(
-                                        profile_photo_url),
+                                        profilePhotoUrl),
                                     fit: BoxFit.cover,
                                   )),
                               // width: 60,
@@ -266,23 +248,23 @@ class create_State extends State<create_post> {
                     height: 0,
 
                   ),
-                  if(_video != null)
-                    _videoPlayerController.value.isInitialized
-                        ? AspectRatio(
-                      aspectRatio: 3 / 2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: VideoPlayer(_videoPlayerController),
-                      ),
-                    )
-                        : Container()
+                  // if(_video != null)
+                  //   _videoPlayerController.value.isInitialized
+                  //       ? AspectRatio(
+                  //     aspectRatio: 3 / 2,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(8.0),
+                  //       child: VideoPlayer(_videoPlayerController),
+                  //     ),
+                  //   )
+                  //       : Container()
                 ],
               ),
             )
         )
     );
   }
-  Future<String> fetchPost() async {
+  Future<void> fetchPost() async {
     print("_storedImage");
     print(_image);
     // print(_image.path);
@@ -290,81 +272,78 @@ class create_State extends State<create_post> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("Token");
     print(token);
-    var request =  http.MultipartRequest(
-        'POST', Uri.parse(Create_Post),
-    );
-    request.headers["Authorization"]='Bearer $token';
-    request.fields['content'] = _textcntrl.text;
-    if(_image==null) {
+    // var request =  http.MultipartRequest(
+    //     'POST', Uri.parse(Create_Post),
+    // );
+    // request.headers["Authorization"]='Bearer $token';
+    // request.fields['content'] = _textcntrl.text;
+    // if(_image==null) {
 print("no_image");
-    }else{
+    // }else{
 
-      request.files.add(
-          await http.MultipartFile.fromPath('attachment[0]', _image.path));
-    }
-    if(_video==null) {
-      print("no_video");
-    }else{
+    //   request.files.add(
+    //       await http.MultipartFile.fromPath('attachment[0]', _image.path));
+    // }
+    // if(_video==null) {
+    //   print("no_video");
+    // }else{
 
-      request.files.add(
-          await http.MultipartFile.fromPath('attachment[0]', _video.path));
-    }
+    //   request.files.add(
+    //       await http.MultipartFile.fromPath('attachment[0]', _video.path));
+    // }
     Fluttertoast.showToast(
         msg: "Uploading....",
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
+       
         backgroundColor: Colors.black,
         textColor: Colors.white,
         fontSize: 14.0
     );
-    print(request.headers);
-print(request.fields);
-print(request.files);
-
-    request.send().then((response) async {
-      if (response.statusCode == 200) {
-        var res = await http.Response.fromStream(response);
-        print(res.body);
-        var responseDecode = json.decode(res.body);
-        String msg=responseDecode['message'];
-        print("msg===");
-        print(msg);
-        Fluttertoast.showToast(
-            msg: msg,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Colors.black,
-            textColor: Colors.white,
-            fontSize: 14.0
-        );
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return Timeline();
-            },
-          ),
-        );
-      } else {
-        var res = await http.Response.fromStream(response);
-        print(res.body);
-        var responseDecode = json.decode(res.body);
-        String msg=responseDecode['message'];
-        print("msg===error");
-        print(msg);
-        Fluttertoast.showToast(
-            msg: msg,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Colors.black,
-            textColor: Colors.white,
-            fontSize: 14.0
-        );
-      }
-    }
-    );
+   
+    // request.send().then((response) async {
+    //   if (response.statusCode == 200) {
+    //     var res = await http.Response.fromStream(response);
+    //     print(res.body);
+    //     var responseDecode = json.decode(res.body);
+    //     String msg=responseDecode['message'];
+    //     print("msg===");
+    //     print(msg);
+    //     Fluttertoast.showToast(
+    //         msg: msg,
+    //         toastLength: Toast.LENGTH_LONG,
+    //         gravity: ToastGravity.BOTTOM,
+    //         timeInSecForIos: 1,
+    //         backgroundColor: Colors.black,
+    //         textColor: Colors.white,
+    //         fontSize: 14.0
+    //     );
+    //     Navigator.of(context).push(
+    //       MaterialPageRoute(
+    //         builder: (context) {
+    //           return Timeline();
+    //         },
+    //       ),
+    //     );
+    //   } else {
+    //     var res = await http.Response.fromStream(response);
+    //     print(res.body);
+    //     var responseDecode = json.decode(res.body);
+    //     String msg=responseDecode['message'];
+    //     print("msg===error");
+    //     print(msg);
+    //     Fluttertoast.showToast(
+    //         msg: msg,
+    //         toastLength: Toast.LENGTH_LONG,
+    //         gravity: ToastGravity.BOTTOM,
+    //         timeInSecForIos: 1,
+    //         backgroundColor: Colors.black,
+    //         textColor: Colors.white,
+    //         fontSize: 14.0
+    //     );
+    //   }
+    // }
+    // );
   }
 }
 
