@@ -3,37 +3,33 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'create_post.dart';
-import 'urls.dart';
+import 'features/Timeline/pages/create_post.dart';
+
 class Data {
   final String profilePhotoUrl;
   final String name;
   final int id;
   final String email;
 
-  Data({this.profilePhotoUrl, this.name,this.id,this.email});
-  factory Data.fromJson(Map<String, dynamic> parsedJson){
+  Data({this.profilePhotoUrl, this.name, this.id, this.email});
+  factory Data.fromJson(Map<String, dynamic> parsedJson) {
     return Data(
-      profilePhotoUrl:parsedJson['profile_photo_url'],
-      name:parsedJson['name'],
-      id:parsedJson['id'],
+      profilePhotoUrl: parsedJson['profile_photo_url'],
+      name: parsedJson['name'],
+      id: parsedJson['id'],
       email: parsedJson['email'],
-
     );
-
   }
 }
 
 class Users extends StatefulWidget {
-  const Users({ Key key }) : super(key: key);
+  const Users({Key key}) : super(key: key);
 
   @override
   _UsersState createState() => _UsersState();
 }
 
 class _UsersState extends State<Users> {
-
-
   @override
   void initState() {
     super.initState();
@@ -46,7 +42,6 @@ class _UsersState extends State<Users> {
             resizeToAvoidBottomInset: false,
             body: SingleChildScrollView(
               child: Column(
-
                 children: [
                   FutureBuilder<List<Data>>(
                     future: getRequest(),
@@ -54,21 +49,25 @@ class _UsersState extends State<Users> {
                       if (snapshot.hasData) {
                         List data = snapshot.data;
                         print(data);
-                        return  ListView.builder(
-                            shrinkWrap:true,
+                        return ListView.builder(
+                            shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: snapshot.data.length,
                             itemBuilder: (context, index) {
-                              return   Padding(
+                              return Padding(
                                 padding: const EdgeInsets.all(5.0),
-
                                 child: InkWell(
                                   onTap: () async {
-                                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    prefs.setString('User_Id',snapshot.data[index].id.toString() );
-                                    prefs.setString('User_Name', snapshot.data[index].name);
-                                    prefs.setString('User_EmailId', snapshot.data[index].email);
-                                    prefs.setString('User_profile_photo_url', snapshot.data[index].profilePhotoUrl);
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.setString('User_Id',
+                                        snapshot.data[index].id.toString());
+                                    prefs.setString(
+                                        'User_Name', snapshot.data[index].name);
+                                    prefs.setString('User_EmailId',
+                                        snapshot.data[index].email);
+                                    prefs.setString('User_profile_photo_url',
+                                        snapshot.data[index].profilePhotoUrl);
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) {
@@ -76,35 +75,44 @@ class _UsersState extends State<Users> {
                                         },
                                       ),
                                     );
-
                                   },
                                   child: Card(
                                       elevation: 5,
                                       color: Colors.white,
                                       child: Container(
                                         child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.all(8.0),
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
                                                 child: CircleAvatar(
                                                   radius: 20,
                                                   backgroundColor: Colors.blue,
                                                   child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(50),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
                                                     child: new Container(
                                                       height: 50,
-                                                      decoration: new BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(50),
-                                                          image: new DecorationImage(
-                                                            image: NetworkImage(
-                                                                snapshot
-                                                                    .data[index]
-                                                                    .profilePhotoUrl),
-                                                            fit: BoxFit.cover,
-                                                          )),
+                                                      decoration:
+                                                          new BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          50),
+                                                              image:
+                                                                  new DecorationImage(
+                                                                image: NetworkImage(
+                                                                    snapshot
+                                                                        .data[
+                                                                            index]
+                                                                        .profilePhotoUrl),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              )),
                                                       // width: 60,
-
                                                     ),
                                                   ),
                                                 ),
@@ -115,13 +123,25 @@ class _UsersState extends State<Users> {
                                               Expanded(
                                                 child: Center(
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .stretch,
                                                     children: <Widget>[
                                                       Padding(
-                                                        padding: const EdgeInsets.fromLTRB(15, 18, 0, 0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                15, 18, 0, 0),
                                                         child: Text(
-                                                          snapshot.data[index].name,
-                                                          style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold),
+                                                          snapshot
+                                                              .data[index].name,
+                                                          style: TextStyle(
+                                                              fontSize: 18,
+                                                              color:
+                                                                  Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
                                                         ),
                                                       ),
                                                       // Padding(
@@ -131,7 +151,6 @@ class _UsersState extends State<Users> {
                                                       //     style: TextStyle(fontSize: 12, color: Colors.black,),
                                                       //   ),
                                                       // ),
-
                                                     ],
                                                   ),
                                                 ),
@@ -155,14 +174,10 @@ class _UsersState extends State<Users> {
                                               //   ),
                                               // ),
                                             ]),
-                                      )
-                                  ),
+                                      )),
                                 ),
                               );
                             });
-
-
-
                       } else if (snapshot.hasError) {
                         return AlertDialog(
                           title: Text(
@@ -212,19 +227,12 @@ class _UsersState extends State<Users> {
                       );
                     },
                   ),
-
-
-
-
-
                 ],
               ),
-            )
-        )
-    );
+            )));
   }
-  Future<List<Data>> getRequest() async {
 
+  Future<List<Data>> getRequest() async {
     // print('Bearer $token');
     // final response = await http.get(View_all_Users,
     //   headers: {
@@ -239,7 +247,5 @@ class _UsersState extends State<Users> {
     // print(list);
     // List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
     // return imagesList;
-
   }
 }
-

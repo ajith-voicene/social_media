@@ -48,4 +48,4 @@ class CommonFullProgressIndicator extends StatelessWidget {
 
 /// We're trying to connect to the Justice-Tracker network but it looks like it's taking longer than usual. Please give us a little more time.
 const _lateLoadingMessage =
-    "We're trying to connect to the Justice-Tracker network but it looks like it's taking longer than usual. Please give us a little more time.";
+    "We're trying to connect to the Social Media network but it looks like it's taking longer than usual. Please give us a little more time.";

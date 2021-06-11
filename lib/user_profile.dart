@@ -1,21 +1,11 @@
-
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'urls.dart';
 
 void main() {
   runApp(user_profile());
 }
-
-
-
-
 
 // ignore: camel_case_types
 class user_profile extends StatefulWidget {
@@ -27,9 +17,9 @@ class user_profile extends StatefulWidget {
 
 class user_profile_State extends State<user_profile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
- 
+
   File _image;
-  String userId,userName,userEmail,userPhoto;
+  String userId, userName, userEmail, userPhoto;
   final _namecntrl = TextEditingController();
   final _usercntrl = TextEditingController();
 
@@ -43,44 +33,43 @@ class user_profile_State extends State<user_profile> {
     user_profile();
     getnames();
     super.initState();
-
   }
 
-  Future getnames() async{
+  Future getnames() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('User_Id');
-    userName=prefs.getString('User_Name');
-    userEmail=prefs.getString('userEmailId');
-    userPhoto=prefs.getString('User_profile_photo_url');
-    
+    userName = prefs.getString('User_Name');
+    userEmail = prefs.getString('userEmailId');
+    userPhoto = prefs.getString('User_profile_photo_url');
   }
+
   @override
   Widget build(BuildContext context) {
-    if(userName==null){
-      userName=" ";
-    }
-    else{
-      _namecntrl.value=TextEditingValue(text: userName,selection: TextSelection.collapsed(offset: userName.length),);
-    
-    if(userEmail==null){
-      userEmail=" ";
-    }
-    else{
-      _usercntrl.value=TextEditingValue(text: userEmail,selection: TextSelection.collapsed(offset: userEmail.length));
+    if (userName == null) {
+      userName = " ";
+    } else {
+      _namecntrl.value = TextEditingValue(
+        text: userName,
+        selection: TextSelection.collapsed(offset: userName.length),
+      );
 
-    }
-    if(userPhoto==null){
-      userPhoto="https://picsum.photos/250?image=9";
-    }else{
-      userPhoto=userPhoto;
-    }
-    return  WillPopScope(
+      if (userEmail == null) {
+        userEmail = " ";
+      } else {
+        _usercntrl.value = TextEditingValue(
+            text: userEmail,
+            selection: TextSelection.collapsed(offset: userEmail.length));
+      }
+      if (userPhoto == null) {
+        userPhoto = "https://picsum.photos/250?image=9";
+      } else {
+        userPhoto = userPhoto;
+      }
+      return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
           resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-              title:Text("Social Media")
-          ),
+          appBar: AppBar(title: Text("Social Media")),
           body: SingleChildScrollView(
             // shrinkWrap: true,
             child: Column(
@@ -95,30 +84,29 @@ class user_profile_State extends State<user_profile> {
                     backgroundColor: Colors.blue,
                     child: _image != null
                         ? ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.file(
-                        _image,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    )
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.file(
+                              _image,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          )
                         : Container(
-                      decoration: new BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        image: new DecorationImage(
-                          image: NetworkImage(
-                              userPhoto),
-                          fit: BoxFit.cover,
-
-                        ),),
-                      width: 100,
-                      height: 100,
-                      // child: Icon(
-                      //   Icons.camera_alt,
-                      //   color: Colors.grey[800],
-                      // ),
-                    ),
+                            decoration: new BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              image: new DecorationImage(
+                                image: NetworkImage(userPhoto),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            width: 100,
+                            height: 100,
+                            // child: Icon(
+                            //   Icons.camera_alt,
+                            //   color: Colors.grey[800],
+                            // ),
+                          ),
                   ),
                 ),
                 SizedBox(
@@ -131,15 +119,14 @@ class user_profile_State extends State<user_profile> {
                 SizedBox(
                   height: 30,
                 ),
-
               ],
             ),
           ),
-
         ),
       );
     }
   }
+
   Widget formUI() {
     return Padding(
       padding: const EdgeInsets.all(40.0),
@@ -149,87 +136,74 @@ class user_profile_State extends State<user_profile> {
           SizedBox(
             height: 10.0,
           ),
-
-          Stack(
-              alignment: Alignment.topRight,
-              children: <Widget>[
-                TextFormField(
-                  controller: _namecntrl,
-                  keyboardType: TextInputType.text,
-                  maxLines: 1,
-                  enabled: false,
-                  validator: (String arg) {
-                    if (arg.length < 3)
-                      return 'Enter Name';
-                    else
-                      return null;
-                  },
-                  cursorColor: Colors.blue,
-                  enableInteractiveSelection: false,
-                  autocorrect: true,
-                  decoration: new InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[800]),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[800]),
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[800]),
-                    ),
-
-                    labelText: 'Name :',
-                    labelStyle: TextStyle(color: Colors.grey[800]),
-
-                  ),
-                  style: TextStyle(fontSize: 16.0, color: Colors.black),
+          Stack(alignment: Alignment.topRight, children: <Widget>[
+            TextFormField(
+              controller: _namecntrl,
+              keyboardType: TextInputType.text,
+              maxLines: 1,
+              enabled: false,
+              validator: (String arg) {
+                if (arg.length < 3)
+                  return 'Enter Name';
+                else
+                  return null;
+              },
+              cursorColor: Colors.blue,
+              enableInteractiveSelection: false,
+              autocorrect: true,
+              decoration: new InputDecoration(
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[800]),
                 ),
-              ]),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[800]),
+                ),
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[800]),
+                ),
+                labelText: 'Name :',
+                labelStyle: TextStyle(color: Colors.grey[800]),
+              ),
+              style: TextStyle(fontSize: 16.0, color: Colors.black),
+            ),
+          ]),
           SizedBox(
             height: 15.0,
           ),
-
-
-
-          Stack(
-              alignment: Alignment.topRight,
-              children: <Widget>[
-                TextFormField(
-                  controller: _usercntrl,
-                  keyboardType: TextInputType.text,
-                  maxLines: 1,
-                  enabled: false,
-                  validator: (String arg) {
-                    if (arg.length < 3)
-                      return 'Enter User name';
-                    else
-                      return null;
-                  },
-                  cursorColor: Colors.blue,
-                  enableInteractiveSelection: false,
-                  autocorrect: true,
-                  decoration: new InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[800]),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[800]),
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[800]),
-                    ),
-
-                    labelText: 'User Name :',
-                    labelStyle: TextStyle(color: Colors.grey[800]),
-
-                  ),
-                  style: TextStyle(fontSize: 16.0, color: Colors.black),
+          Stack(alignment: Alignment.topRight, children: <Widget>[
+            TextFormField(
+              controller: _usercntrl,
+              keyboardType: TextInputType.text,
+              maxLines: 1,
+              enabled: false,
+              validator: (String arg) {
+                if (arg.length < 3)
+                  return 'Enter User name';
+                else
+                  return null;
+              },
+              cursorColor: Colors.blue,
+              enableInteractiveSelection: false,
+              autocorrect: true,
+              decoration: new InputDecoration(
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[800]),
                 ),
-              ]),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[800]),
+                ),
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[800]),
+                ),
+                labelText: 'User Name :',
+                labelStyle: TextStyle(color: Colors.grey[800]),
+              ),
+              style: TextStyle(fontSize: 16.0, color: Colors.black),
+            ),
+          ]),
           SizedBox(
             height: 15.0,
           ),
-
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -237,10 +211,11 @@ class user_profile_State extends State<user_profile> {
               children: [
                 // ignore: deprecated_member_use
                 RaisedButton(
-                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(10.0)),
                   color: Colors.blue[800],
                   onPressed: () {
-Navigator.pop(context);
+                    Navigator.pop(context);
                     // _validateInputs();
                   },
                   child: Text(
@@ -251,17 +226,16 @@ Navigator.pop(context);
                     ),
                   ),
                 ),
-
               ],
             ),
           )
-
         ],
       ),
     );
   }
 
-  Future<String> user_profilesss() async { // <------ CHANGED THIS LINE
+  Future<String> user_profilesss() async {
+    // <------ CHANGED THIS LINE
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("Token");
@@ -286,18 +260,16 @@ Navigator.pop(context);
     //   prefs.setString('User_Name', responseJson['data']['name']);
     //   prefs.setString('userEmailId', responseJson['data']['email']);
     //   prefs.setString('User_profile_photo_url', responseJson['data']['profile_photo_url']);
-      // print('RETURNING: ' + response.body);
-      // Fluttertoast.showToast(
-      //     msg:message,
-      //     toastLength: Toast.LENGTH_LONG,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIos: 1,
-      //     backgroundColor: Colors.black,
-      //     textColor: Colors.white,
-      //     fontSize: 14.0
-      // );
-
-
+    // print('RETURNING: ' + response.body);
+    // Fluttertoast.showToast(
+    //     msg:message,
+    //     toastLength: Toast.LENGTH_LONG,
+    //     gravity: ToastGravity.BOTTOM,
+    //     timeInSecForIos: 1,
+    //     backgroundColor: Colors.black,
+    //     textColor: Colors.white,
+    //     fontSize: 14.0
+    // );
 
     // } else {
     //   Fluttertoast.showToast(
@@ -313,6 +285,4 @@ Navigator.pop(context);
 
     // }
   }
-
 }
-

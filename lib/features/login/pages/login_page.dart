@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
-import 'package:social_media/login/bloc/social%20login/social_login_cubit.dart';
-import 'package:social_media/timeline.dart';
+import 'package:social_media/features/login/bloc/social%20login/social_login_cubit.dart';
+import 'package:social_media/features/Timeline/pages/timeline.dart';
 import 'package:social_media/utils/alerts.dart';
 import 'package:social_media/utils/constants.dart';
 
-import '../../CustomAppBar.dart';
+import '../../../CustomAppBar.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -62,19 +62,22 @@ class _State extends State<LoginPage> {
                     BlocConsumer<SocialLoginCubit, SocialLoginState>(
                   listener: (context, state) {
                     if (state is SocialLoginSuccess) {
-                      Alerts.showToast("Succesfully logged In");
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TimeLine(),
-                          ));
+                      if (state.success) {
+                        Alerts.showToast("Succesfully logged In");
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TimeLine(),
+                            ));
+                      } else {
+                        Alerts.showErrorToast("Login Failed, Try again");
+                      }
                     }
                     if (state is SocialLoginError) {
                       Alerts.showErrorToast("Login Failed, Try again");
                     }
                   },
                   builder: (context, state) {
-                    print(state);
                     if (state is SocialLoginLoading)
                       return CommonFullProgressIndicator();
                     return Column(

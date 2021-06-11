@@ -3,37 +3,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:social_media/model/home_models.dart';
 
-import 'timeline.dart';
-import 'urls.dart';
+import 'features/Timeline/pages/timeline.dart';
 
 class SingleView extends StatefulWidget {
-  const SingleView({ Key key }) : super(key: key);
+  final Data data;
+  const SingleView(this.data, {Key key}) : super(key: key);
 
   @override
   _SingleViewState createState() => _SingleViewState();
 }
 
 class _SingleViewState extends State<SingleView> {
-  
-  String profilePhotoUrl,comments,first_attachment_type,post_user_photo,Post_Id,user_name,content,first_attachment_url,likes,is_liked,type="0";
-  
-  Future getnames() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    profilePhotoUrl = prefs.getString('profile_photo_url');
-    post_user_photo = prefs.getString('post_user_photo');
-    Post_Id = prefs.getString('Post_Id');
-    post_user_photo = prefs.getString('post_user_photo');
-    user_name = prefs.getString('user_name');
-    content = prefs.getString('content');
-    first_attachment_url = prefs.getString('first_attachment_url');
-    likes = prefs.getString('likes');
-    is_liked = prefs.getString('is_liked');
-    comments=prefs.getString('comments');
-    first_attachment_type=prefs.getString('first_attachment_type');
-
-    
-  }
   // ignore: missing_return
   Future<bool> _onWillPop() {
     Navigator.of(context).push(
@@ -44,15 +26,17 @@ class _SingleViewState extends State<SingleView> {
       ),
     );
   }
+
   @override
   void initState() {
-    getnames();
     super.initState();
   }
+
   @override
   void dispose() {
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     // if(first_attachment_type=="video/mp4") {
@@ -71,84 +55,77 @@ class _SingleViewState extends State<SingleView> {
     // }else{
     //   content=content;
     // }
-    return  WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-            leading: InkWell(
-                onTap: (){
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return TimeLine();
-                      },
-                    ),
-                  );
-                },
-                child: Icon(Icons.arrow_back,size:25,)),
-            title:Text("Social Media")
-        ),
-        body: Center(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
-            child: Center(
-              child: Card(
-                margin: EdgeInsets.zero,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(0.0))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment
-                      .stretch,
-                  children: <Widget>[
-SizedBox(height: 10,),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        child: Text(content, style: TextStyle(
-                            fontSize: 16.0, color: Colors.black),),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      // appBar: AppBar(
+      //     leading: InkWell(
+      //         onTap: () {
+      //           Navigator.of(context).push(
+      //             MaterialPageRoute(
+      //               builder: (context) {
+      //                 return TimeLine();
+      //               },
+      //             ),
+      //           );
+      //         },
+      //         child: Icon(
+      //           Icons.arrow_back,
+      //           size: 25,
+      //         )),
+      //     title: Text("Social Media")),
+      body: Center(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+          child: Center(
+            child: Card(
+              margin: EdgeInsets.zero,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(0.0))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      child: Text(
+                        widget.data.content,
+                        style: TextStyle(fontSize: 16.0, color: Colors.black),
                       ),
                     ),
-                    // ignore: unrelated_type_equality_checks
-                    (first_attachment_type=="image/jpeg")?
-                    Image.network(
-                        first_attachment_url,
-                        // width: 300,
-                        height: 300,
-                        fit: BoxFit.fill
+                  ),
+                  // ignore: unrelated_type_equality_checks
+                  (widget.data.firstAttachmentType == "image/jpeg")
+                      ? Image.network(widget.data.firstAttachmentUrl,
+                          // width: 300,
+                          height: 300,
+                          fit: BoxFit.fill)
+                      : Container(
+                          height: 0,
+                        ),
 
-                    ):
-                    Container(
-                      height: 0,
-                    ),
-
-                    (first_attachment_type=="video/mp4")?
-
-                    Container(
-                      height: 400,
-                      // child: Chewie(
-                      //   controller: _chewieController,
-                      // ),
-                    ):
-                    Container(
-                      height: 0,
-                    ),
-
-
-                  ],
-                ),
+                  (widget.data.firstAttachmentType == "video/mp4")
+                      ? Container(
+                          height: 400,
+                          // child: Chewie(
+                          //   controller: _chewieController,
+                          // ),
+                        )
+                      : Container(
+                          height: 0,
+                        ),
+                ],
               ),
             ),
           ),
         ),
-
-        resizeToAvoidBottomInset: false,
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
-
 
   Future<String> reaction() async {
     // <------ CHANGED THIS LINE
@@ -156,9 +133,7 @@ SizedBox(height: 10,),
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString("Token");
     String post_id = pref.getString("Post_Id");
-    print("post_id==");
-    print(post_id);
-    print(type);
+
     // final response = await http.post(react_postss,
     //     headers: {
     //       'Content-Type': 'application/json',
@@ -188,7 +163,6 @@ SizedBox(height: 10,),
     //       fontSize: 14.0
     //   );
 
-
     // } else {
     //   Fluttertoast.showToast(
     //       msg: message,
@@ -204,4 +178,3 @@ SizedBox(height: 10,),
     // }
   }
 }
-

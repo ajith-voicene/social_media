@@ -4,9 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'urls.dart';
-
-Future<String> myProfile() async { // <------ CHANGED THIS LINE
+Future<String> myProfile() async {
+  // <------ CHANGED THIS LINE
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("Token");
@@ -30,18 +29,16 @@ Future<String> myProfile() async { // <------ CHANGED THIS LINE
   //   prefs.setString('Name', responseJson['data']['name']);
   //   prefs.setString('EmailId', responseJson['data']['email']);
   //   prefs.setString('profile_photo_url', responseJson['data']['profile_photo_url']);
-    // print('RETURNING: ' + response.body);
-    // Fluttertoast.showToast(
-    //     msg:message,
-    //     toastLength: Toast.LENGTH_LONG,
-    //     gravity: ToastGravity.BOTTOM,
-    //     timeInSecForIos: 1,
-    //     backgroundColor: Colors.black,
-    //     textColor: Colors.white,
-    //     fontSize: 14.0
-    // );
-
-
+  // print('RETURNING: ' + response.body);
+  // Fluttertoast.showToast(
+  //     msg:message,
+  //     toastLength: Toast.LENGTH_LONG,
+  //     gravity: ToastGravity.BOTTOM,
+  //     timeInSecForIos: 1,
+  //     backgroundColor: Colors.black,
+  //     textColor: Colors.white,
+  //     fontSize: 14.0
+  // );
 
   // } else {
   //   Fluttertoast.showToast(
