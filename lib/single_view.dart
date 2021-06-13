@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:social_media/common_widgets/videoPlaterCard.dart';
 import 'package:social_media/model/home_models.dart';
-
-import 'features/Timeline/pages/timeline.dart';
 
 class SingleView extends StatefulWidget {
   final Data data;
@@ -16,17 +12,6 @@ class SingleView extends StatefulWidget {
 }
 
 class _SingleViewState extends State<SingleView> {
-  // ignore: missing_return
-  Future<bool> _onWillPop() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return TimeLine();
-        },
-      ),
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -39,92 +24,27 @@ class _SingleViewState extends State<SingleView> {
 
   @override
   Widget build(BuildContext context) {
-    // if(first_attachment_type=="video/mp4") {
-    //   _videoPlayerController1 =
-    //       VideoPlayerController.network(
-    //           first_attachment_url);
-    //   _chewieController = ChewieController(
-    //     videoPlayerController: _videoPlayerController1,
-    //     aspectRatio: 3 / 2,
-    //     autoPlay: true,
-    //     looping: false,
-    //   );
-    // }
-    // if(content==null){
-    //   content=" ";
-    // }else{
-    //   content=content;
-    // }
     return Scaffold(
-      backgroundColor: Colors.black,
-      // appBar: AppBar(
-      //     leading: InkWell(
-      //         onTap: () {
-      //           Navigator.of(context).push(
-      //             MaterialPageRoute(
-      //               builder: (context) {
-      //                 return TimeLine();
-      //               },
-      //             ),
-      //           );
-      //         },
-      //         child: Icon(
-      //           Icons.arrow_back,
-      //           size: 25,
-      //         )),
-      //     title: Text("Social Media")),
-      body: Center(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
-          child: Center(
-            child: Card(
-              margin: EdgeInsets.zero,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(0.0))),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                      child: Text(
-                        widget.data.content,
-                        style: TextStyle(fontSize: 16.0, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                  // ignore: unrelated_type_equality_checks
-                  (widget.data.firstAttachmentType == "image/jpeg")
-                      ? Image.network(widget.data.firstAttachmentUrl,
-                          // width: 300,
-                          height: 300,
-                          fit: BoxFit.fill)
-                      : Container(
-                          height: 0,
-                        ),
-
-                  (widget.data.firstAttachmentType == "video/mp4")
-                      ? Container(
-                          height: 400,
-                          // child: Chewie(
-                          //   controller: _chewieController,
-                          // ),
-                        )
-                      : Container(
-                          height: 0,
-                        ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      resizeToAvoidBottomInset: false,
-    );
+        backgroundColor: Colors.black,
+        body: Center(
+            child: Container(
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                child: Center(
+                    child: (widget.data.firstAttachmentType == "image/jpeg")
+                        ? InteractiveViewer(
+                            minScale: .4,
+                            child: Image.network(widget.data.firstAttachmentUrl,
+                                // width: 300,
+                                // height: 300,
+                                fit: BoxFit.contain),
+                          )
+                        : (widget.data.firstAttachmentType == "video/mp4")
+                            ? Container(
+                                child: VideoPlayCard(
+                                    widget.data.firstAttachmentUrl))
+                            : Container(
+                                height: 0,
+                              )))));
   }
 
   Future<String> reaction() async {

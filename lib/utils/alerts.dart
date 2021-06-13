@@ -15,7 +15,7 @@ class Alerts {
 
   static showErrorToast(String msg) {
     Fluttertoast.showToast(
-        msg: msg,
+        msg: msg ?? "Something went wrong, Try again",
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         // timeInSecForIosWeb: 1,

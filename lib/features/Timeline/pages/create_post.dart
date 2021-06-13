@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
+import 'package:social_media/common_widgets/videoPlaterCard.dart';
 import 'package:social_media/features/Timeline/bloc/createPost/createPost_cubit.dart';
 import 'package:social_media/utils/alerts.dart';
 import '../../../common_widgets/common_button.dart';
@@ -26,7 +26,6 @@ class _CreatePostState extends State<CreatePost> {
   File _image;
   String profilePhotoUrl = Constant.photoUrl;
 
-  BetterPlayerController _betterPlayerController;
   @override
   void initState() {
     super.initState();
@@ -47,17 +46,13 @@ class _CreatePostState extends State<CreatePost> {
   _pickVideo() async {
     final video = await ImagePicker().getVideo(source: ImageSource.gallery);
     _video = File(video.path);
-    BetterPlayerDataSource betterPlayerDataSource =
-        BetterPlayerDataSource(BetterPlayerDataSourceType.file, _video.path);
-    _betterPlayerController = BetterPlayerController(
-        BetterPlayerConfiguration(),
-        betterPlayerDataSource: betterPlayerDataSource);
     if (await _video.exists()) {
       _image = null;
       file = _video;
       Future.delayed(Duration(seconds: 1), () {
         setState(() {});
       });
+      setState(() {});
     }
   }
 
@@ -131,6 +126,7 @@ class _CreatePostState extends State<CreatePost> {
                   if (state is CreatePostError)
                     Alerts.showErrorToast("Post upload Failed, Try again");
                   if (state is CreatePostSuccess) {
+                    Navigator.pop(context);
                     if (state.success) Alerts.showToast("Post uploded");
                   }
                 }, builder: (ctx, state) {
@@ -141,83 +137,6 @@ class _CreatePostState extends State<CreatePost> {
                     );
                   return child(ctx);
                 }))));
-  }
-
-  Future<void> fetchPost() async {
-    print("_storedImage");
-    print(_image);
-    // print(_image.path);
-    print(_textcntrl.text);
-    // var request =  http.MultipartRequest(
-    //     'POST', Uri.parse(Create_Post),
-    // );
-    // request.headers["Authorization"]='Bearer $token';
-    // request.fields['content'] = _textcntrl.text;
-    // if(_image==null) {
-    print("no_image");
-    // }else{
-
-    //   request.files.add(
-    //       await http.MultipartFile.fromPath('attachment[0]', _image.path));
-    // }
-    // if(_video==null) {
-    //   print("no_video");
-    // }else{
-
-    //   request.files.add(
-    //       await http.MultipartFile.fromPath('attachment[0]', _video.path));
-    // }
-    Fluttertoast.showToast(
-        msg: "Uploading....",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 14.0);
-
-    // request.send().then((response) async {
-    //   if (response.statusCode == 200) {
-    //     var res = await http.Response.fromStream(response);
-    //     print(res.body);
-    //     var responseDecode = json.decode(res.body);
-    //     String msg=responseDecode['message'];
-    //     print("msg===");
-    //     print(msg);
-    //     Fluttertoast.showToast(
-    //         msg: msg,
-    //         toastLength: Toast.LENGTH_LONG,
-    //         gravity: ToastGravity.BOTTOM,
-    //         timeInSecForIos: 1,
-    //         backgroundColor: Colors.black,
-    //         textColor: Colors.white,
-    //         fontSize: 14.0
-    //     );
-    //     Navigator.of(context).push(
-    //       MaterialPageRoute(
-    //         builder: (context) {
-    //           return Timeline();
-    //         },
-    //       ),
-    //     );
-    //   } else {
-    //     var res = await http.Response.fromStream(response);
-    //     print(res.body);
-    //     var responseDecode = json.decode(res.body);
-    //     String msg=responseDecode['message'];
-    //     print("msg===error");
-    //     print(msg);
-    //     Fluttertoast.showToast(
-    //         msg: msg,
-    //         toastLength: Toast.LENGTH_LONG,
-    //         gravity: ToastGravity.BOTTOM,
-    //         timeInSecForIos: 1,
-    //         backgroundColor: Colors.black,
-    //         textColor: Colors.white,
-    //         fontSize: 14.0
-    //     );
-    //   }
-    // }
-    // );
   }
 
   Widget child(BuildContext ctx) {
@@ -266,8 +185,6 @@ class _CreatePostState extends State<CreatePost> {
                     maxLines: 8,
                     minLines: 5,
                     cursorColor: Colors.black,
-                    enableInteractiveSelection: false,
-                    autocorrect: true,
                     validator: (valu) {
                       if (valu == null || valu == "") return "Required";
                       return null;
@@ -318,14 +235,12 @@ class _CreatePostState extends State<CreatePost> {
                 )
               : Container(),
           if (_video != null)
-            _betterPlayerController.isVideoInitialized()
-                ? AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: BetterPlayer(
-                      controller: _betterPlayerController,
-                    ),
-                  )
-                : Container(),
+            VideoPlayCard(
+              _video.path,
+              autoPlay: false,
+              isAsset: true,
+            ),
+
           SizedBox(
             height: 10,
           ),

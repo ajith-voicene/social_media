@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/common_widgets/robustImage.dart';
+import 'package:social_media/features/Timeline/bloc/like_button/likebutton_cubit.dart';
 import 'package:social_media/model/home_models.dart';
+import 'package:social_media/utils/alerts.dart';
 
 import '../../../profile.dart';
+import '../../../single_view.dart';
 
 class PostCard extends StatefulWidget {
   final Data data;
@@ -16,7 +20,18 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   String type = "0";
-  Color color = Colors.grey;
+  int likeCount;
+
+  int liked;
+
+  @override
+  void initState() {
+    super.initState();
+    likeCount = widget.data.likes ?? 0;
+
+    liked = widget.data.isLiked;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -144,40 +159,14 @@ class _PostCardState extends State<PostCard> {
                         widget.data.firstAttachmentType == "image/gif")
                     ? InkWell(
                         onTap: () async {
-                          // SharedPreferences prefs =
-                          //     await SharedPreferences
-                          //         .getInstance();
-                          // prefs.setString(
-                          //     'Post_Id',
-                          //     widget.data.id
-                          //         .toString());
-                          // prefs.setString(
-                          //     'content',
-                          //     widget.data
-                          //         .content);
-                          // prefs.setString(
-                          //     'first_attachment_url',
-                          //     widget.data
-                          //         .firstAttachmentType);
-                          // prefs.setString(
-                          //     'first_attachment_type',
-                          //     widget.data
-                          //         .firstAttachmentType);
-                          // Navigator.of(context)
-                          //     .pushAndRemoveUntil(
-                          //         CupertinoPageRoute(
-                          //             builder:
-                          //                 (context) =>
-                          //                     SingleView()),
-                          //         (r) => false);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SingleView(widget.data)));
                         },
                         child: SizedBox(
                           height: 250,
                           child: RobustFadeInImage(
-                              imageUrl: widget.data.firstAttachmentType,
-                              // width: 300,
-
-                              fit: BoxFit.fill),
+                              imageUrl: widget.data.firstAttachmentUrl,
+                              fit: BoxFit.contain),
                         ),
                       )
                     : Container(
@@ -187,32 +176,8 @@ class _PostCardState extends State<PostCard> {
                 (widget.data.firstAttachmentType == "video/mp4")
                     ? InkWell(
                         onTap: () async {
-                          // SharedPreferences prefs =
-                          //     await SharedPreferences
-                          //         .getInstance();
-                          // prefs.setString(
-                          //     'Post_Id',
-                          //     widget.data.id
-                          //         .toString());
-                          // prefs.setString(
-                          //     'content',
-                          //     widget.data
-                          //         .content);
-                          // prefs.setString(
-                          //     'first_attachment_url',
-                          //     widget.data
-                          //         .firstAttachmentType);
-                          // prefs.setString(
-                          //     'first_attachment_type',
-                          //     widget.data
-                          //         .firstAttachmentType);
-                          // Navigator.of(context)
-                          //     .pushAndRemoveUntil(
-                          //         CupertinoPageRoute(
-                          //             builder:
-                          //                 (context) =>
-                          //                     SingleView()),
-                          //         (r) => false);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SingleView(widget.data)));
                         },
                         child: Container(
                           height: 250,
@@ -240,7 +205,7 @@ class _PostCardState extends State<PostCard> {
                               size: 20,
                             ),
                             Text(
-                              "  " + widget.data.likes.toString(),
+                              "  " + "$likeCount",
                               style: TextStyle(
                                 fontSize: 15.0,
                                 color: Colors.black,
@@ -272,56 +237,17 @@ class _PostCardState extends State<PostCard> {
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          // SharedPreferences prefs =
-                          //     await SharedPreferences
-                          //         .getInstance();
-                          // prefs.setString(
-                          //     'Post_Id',
-                          //     widget.data.id
-                          //         .toString());
-
-                          if (widget.data.isLiked == 0) {
-                            setState(() {
-                              type = "1";
-                              // reaction();
-                              color = Colors.blue;
-                            });
-                          } else {
-                            setState(() {
-                              type = "0";
-                              // reaction();
-                              color = Colors.grey;
-                            });
-                          }
+                      LikeButton(
+                        liked: liked,
+                        id: widget.data.id,
+                        onLiked: (like) {
+                          liked = like;
+                          if (like == 1)
+                            likeCount += 1;
+                          else
+                            likeCount -= 1;
+                          setState(() {});
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 5, 0, 8),
-                          child: Row(
-                            children: [
-                              (widget.data.isLiked == 0)
-                                  ? Icon(
-                                      Icons.thumb_up_alt,
-                                      color: color,
-                                      size: 20,
-                                    )
-                                  : Icon(
-                                      Icons.thumb_up_alt,
-                                      color: color,
-                                      size: 20,
-                                    ),
-                              Text(
-                                "   Like     ",
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
                       InkWell(
                         onTap: () async {
@@ -422,5 +348,80 @@ class _PostCardState extends State<PostCard> {
                     ]),
               ],
             )));
+  }
+}
+
+class LikeButton extends StatefulWidget {
+  final int liked;
+  final Function(int) onLiked;
+  final int id;
+  const LikeButton({Key key, this.liked, this.onLiked, this.id})
+      : super(key: key);
+
+  @override
+  _LikeButtonState createState() => _LikeButtonState();
+}
+
+class _LikeButtonState extends State<LikeButton> {
+  bool isLiked;
+  Color color;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    isLiked = widget.liked == 1;
+    color = isLiked ? Colors.blue : Colors.grey;
+    return BlocProvider<LikebuttonCubit>(
+      create: (context) => LikebuttonCubit(),
+      child: Builder(
+        builder: (context) => BlocConsumer<LikebuttonCubit, LikebuttonState>(
+          listener: (context, state) {
+            if (state is LikebuttonError) {
+              Alerts.showErrorToast(null);
+            }
+          },
+          builder: (cont, state) {
+            return InkWell(
+              onTap: () {
+                if (isLiked) {
+                  setState(() {
+                    widget.onLiked(0);
+                    cont.read<LikebuttonCubit>().onLiked(0, "${widget.id}");
+                  });
+                } else {
+                  setState(() {
+                    widget.onLiked(1);
+                    cont.read<LikebuttonCubit>().onLiked(1, "${widget.id}");
+                  });
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(5, 5, 0, 8),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.thumb_up_alt,
+                      color: color,
+                      size: 20,
+                    ),
+                    Text(
+                      "   Like     ",
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

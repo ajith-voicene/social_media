@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
-import 'package:social_media/common_widgets/robustImage.dart';
-import 'package:social_media/features/Timeline/bloc/cubit/timelineFeed_cubit.dart';
+import 'package:social_media/features/Timeline/bloc/timelineFeed/timelineFeed_cubit.dart';
 import 'package:social_media/features/Timeline/widget/postCard.dart';
-import 'package:social_media/model/home_models.dart';
-import 'package:social_media/profile.dart';
-import 'package:social_media/single_view.dart';
 
-import 'comment_page.dart';
 import 'create_post.dart';
 import '../../../utils/constants.dart';
 
@@ -33,133 +28,103 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TimelineFeedCubit>(
-        create: (context) => TimelineFeedCubit()..getPosts(),
-        child: Builder(
-          builder: (context) => RefreshIndicator(
-              onRefresh: () async {
-                context.read<TimelineFeedCubit>().getPosts();
-              },
-              child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: BlocConsumer<TimelineFeedCubit, TimelineFeedState>(
-                      listener: (context, state) {
-                    if (state is TimelineFeedSuccess) print(state.list);
-                  }, builder: (context, state) {
-                    print(state);
-                    if (state is TimelineFeedSuccess)
-                      return SingleChildScrollView(
-                          child: Column(children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                                child: CircleAvatar(
-                                  radius: 25,
-                                  backgroundColor: Colors.blue,
-                                  backgroundImage:
-                                      NetworkImage(profilePhotoUrl),
-                                ),
-                              ),
-                              Container(
-                                child: Expanded(
-                                  child: new TextFormField(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return CreatePost();
-                                          },
-                                        ),
-                                      );
-                                    },
-                                    controller: _textcntrl,
-                                    keyboardType: null,
-                                    maxLines: 5,
-                                    minLines: 1,
-                                    cursorColor: Colors.black,
-                                    enableInteractiveSelection: false,
-                                    autocorrect: true,
-                                    decoration: new InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey[800],
-                                            width: 1.0),
-                                        borderRadius: const BorderRadius.all(
-                                          const Radius.circular(30.0),
-                                        ),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey[800],
-                                            width: 1.0),
-                                        borderRadius: const BorderRadius.all(
-                                          const Radius.circular(30.0),
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey[800],
-                                            width: 1.0),
-                                        borderRadius: const BorderRadius.all(
-                                          const Radius.circular(30.0),
-                                        ),
-                                      ),
-                                      hintText: 'Write something here..... ',
-                                      labelStyle:
-                                          TextStyle(color: Colors.grey[800]),
+    return Builder(
+      builder: (context) => RefreshIndicator(
+          onRefresh: () async {
+            context.read<TimelineFeedCubit>().getPosts();
+          },
+          child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: BlocConsumer<TimelineFeedCubit, TimelineFeedState>(
+                  listener: (context, state) {
+                // if (state is TimelineFeedSuccess)
+              }, builder: (context, state) {
+                if (state is TimelineFeedSuccess)
+                  return SingleChildScrollView(
+                      child: Column(children: [
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                            child: CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Colors.blue,
+                              backgroundImage: NetworkImage(profilePhotoUrl),
+                            ),
+                          ),
+                          Container(
+                            child: Expanded(
+                              child: new TextFormField(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return CreatePost();
+                                      },
                                     ),
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.black),
+                                  );
+                                },
+                                controller: _textcntrl,
+                                keyboardType: null,
+                                maxLines: 5,
+                                minLines: 1,
+                                cursorColor: Colors.black,
+                                enableInteractiveSelection: false,
+                                autocorrect: true,
+                                decoration: new InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.grey[800], width: 1.0),
+                                    borderRadius: const BorderRadius.all(
+                                      const Radius.circular(30.0),
+                                    ),
                                   ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.grey[800], width: 1.0),
+                                    borderRadius: const BorderRadius.all(
+                                      const Radius.circular(30.0),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.grey[800], width: 1.0),
+                                    borderRadius: const BorderRadius.all(
+                                      const Radius.circular(30.0),
+                                    ),
+                                  ),
+                                  hintText: 'Write something here..... ',
+                                  labelStyle:
+                                      TextStyle(color: Colors.grey[800]),
                                 ),
+                                style: TextStyle(
+                                    fontSize: 16.0, color: Colors.black),
                               ),
-                            ]),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: state.list.length,
-                            itemBuilder: (context, index) {
-                              return PostCard(state.list[index]);
-                            })
-                      ]));
-                    return CommonFullProgressIndicator(
-                      message: "Loading posts...",
-                    );
-                  }))),
-        ));
-  }
-
-  Future<List<Data>> myHome() async {
-    //replace your restFull API here.
-    final SharedPreferences pref = await SharedPreferences.getInstance();
-    String token = pref.getString("Token");
-
-    print('Bearer $token');
-    // final response = await http.get(Timeline_url,
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Accept': 'application/json',
-    //     'Authorization': 'Bearer $token'
-    //   },
-    // );
-    // Map<String, dynamic> responseData = json.decode(response.body);
-    // var list = responseData['data'] as List;
-    // // print("list====");
-    // // print(list);
-    // List<Data> imagesList = list.map((i) => Data.fromJson(i)).toList();
-    // return imagesList;
+                            ),
+                          ),
+                        ]),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: state.list.length,
+                        cacheExtent: 8,
+                        itemBuilder: (context, index) {
+                          return PostCard(state.list[index]);
+                        })
+                  ]));
+                return CommonFullProgressIndicator(
+                  message: "Loading posts...",
+                );
+              }))),
+    );
   }
 
   Future<String> user_profilesss() async {
     // <------ CHANGED THIS LINE
-
-    String userId;
-    print("token123");
 
     // final response = await http.get(
     //   single_user+userId,

@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:social_media/common_widgets/doubleResult.dart';
 import 'package:social_media/common_widgets/failure.dart';
 import 'package:social_media/model/home_models.dart';
 import 'package:social_media/resources/urls.dart';
@@ -26,6 +26,14 @@ class Repository {
       repoExecute<bool>(() => netowrk.createPost(file, text));
   Future<Either<Failure, List<Data>>> getPosts() =>
       repoExecute<List<Data>>(() => netowrk.getPosts());
+
+  Future<Either<Failure, DoubleResponse>> getSinglePost(String id) {
+    return repoExecute<DoubleResponse>(() => netowrk.getSinglePost(id));
+  }
+
+  Future<Either<Failure, String>> onLiked(int like, String postId) {
+    return repoExecute<String>(() => netowrk.onLiked(like, postId));
+  }
 }
 
 class RemoteNetwork {
@@ -43,7 +51,6 @@ class RemoteNetwork {
           "device_name": Constant.devicename
         }));
 
-    print(response.data);
     success = response.data['success'];
     if (success) {
       Constant.token = response.data['token'];
@@ -73,7 +80,6 @@ class RemoteNetwork {
       pref.remove("Token");
       Constant.token = null;
     }
-    print(response.requestOptions.headers);
     return success;
   }
 
@@ -87,7 +93,6 @@ class RemoteNetwork {
       "attachment[0]": fileData,
       "content": text,
     });
-    print(Constant.token);
     final response = await _client.post(createPostUrl,
         data: formData,
         options: Options(
@@ -111,12 +116,43 @@ class RemoteNetwork {
           },
         ));
     List<Data> list = [];
-    // print(response.data);
     (response.data['data'] as List).forEach((element) {
-      print(element);
       list.add(Data.fromMap(element));
     });
-    // print(list);
     return list;
+  }
+
+  Future<DoubleResponse> getSinglePost(String id) async {
+    final response = await _client.get(getSinglePostUrl + id,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+
+    bool success = response.data['success'];
+    String msg = response.data['message'];
+    Data data = Data.fromJson(response.data['data']);
+    return DoubleResponse(data, success ? msg : null);
+  }
+
+  Future<String> onLiked(int like, String postId) async {
+    final response = await _client.post(reactPostUrl,
+        data: FormData.fromMap({
+          "post_id": postId,
+          "type": like,
+        }),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+
+    String msg = response.data['message'];
+    return msg;
   }
 }
