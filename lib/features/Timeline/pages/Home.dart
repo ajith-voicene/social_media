@@ -39,89 +39,88 @@ class _HomeState extends State<Home> {
                   listener: (context, state) {
                 // if (state is TimelineFeedSuccess)
               }, builder: (context, state) {
-                if (state is TimelineFeedSuccess)
-                  return SingleChildScrollView(
-                      child: Column(children: [
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                            child: CircleAvatar(
-                              radius: 25,
-                              backgroundColor: Colors.blue,
-                              backgroundImage: NetworkImage(profilePhotoUrl),
-                            ),
-                          ),
-                          Container(
-                            child: Expanded(
-                              child: new TextFormField(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return CreatePost();
-                                      },
-                                    ),
-                                  );
-                                },
-                                controller: _textcntrl,
-                                keyboardType: null,
-                                maxLines: 5,
-                                minLines: 1,
-                                cursorColor: Colors.black,
-                                enableInteractiveSelection: false,
-                                autocorrect: true,
-                                decoration: new InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[800], width: 1.0),
-                                    borderRadius: const BorderRadius.all(
-                                      const Radius.circular(30.0),
-                                    ),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[800], width: 1.0),
-                                    borderRadius: const BorderRadius.all(
-                                      const Radius.circular(30.0),
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[800], width: 1.0),
-                                    borderRadius: const BorderRadius.all(
-                                      const Radius.circular(30.0),
-                                    ),
-                                  ),
-                                  hintText: 'Write something here..... ',
-                                  labelStyle:
-                                      TextStyle(color: Colors.grey[800]),
-                                ),
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.black),
-                              ),
-                            ),
-                          ),
-                        ]),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: state.list.length,
-                        cacheExtent: 8,
-                        itemBuilder: (context, index) {
-                          return PostCard(state.list[index]);
-                        })
-                  ]));
+                if (state is TimelineFeedSuccess ||
+                    state is TimelineFeedLoading)
+                  return SingleChildScrollView(child: child(state));
                 return CommonFullProgressIndicator(
                   message: "Loading posts...",
                 );
               }))),
     );
   }
+
+  Widget child(state) => Column(children: [
+        if (state is TimelineFeedLoading) LinearProgressIndicator(),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+            child: CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.blue,
+              backgroundImage: NetworkImage(profilePhotoUrl),
+            ),
+          ),
+          Container(
+            child: Expanded(
+              child: new TextFormField(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return CreatePost();
+                      },
+                    ),
+                  );
+                },
+                controller: _textcntrl,
+                keyboardType: null,
+                maxLines: 5,
+                minLines: 1,
+                cursorColor: Colors.black,
+                enableInteractiveSelection: false,
+                autocorrect: true,
+                decoration: new InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey[800], width: 1.0),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(30.0),
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey[800], width: 1.0),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(30.0),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey[800], width: 1.0),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(30.0),
+                    ),
+                  ),
+                  hintText: 'Write something here..... ',
+                  labelStyle: TextStyle(color: Colors.grey[800]),
+                ),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
+              ),
+            ),
+          ),
+        ]),
+        SizedBox(
+          height: 5,
+        ),
+        ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: state.list.length,
+            cacheExtent: 8,
+            itemBuilder: (context, index) {
+              return PostCard(
+                state.list[index],
+                onLiked: (v) {},
+              );
+            })
+      ]);
 
   Future<String> user_profilesss() async {
     // <------ CHANGED THIS LINE

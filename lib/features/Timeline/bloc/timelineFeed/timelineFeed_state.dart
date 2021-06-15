@@ -9,7 +9,13 @@ abstract class TimelineFeedState extends Equatable {
 
 class TimelineFeedInitial extends TimelineFeedState {}
 
-class TimelineFeedLoading extends TimelineFeedState {}
+class TimelineFeedLoading extends TimelineFeedState {
+  final List<Data> list;
+  @override
+  List<Object> get props => [this.list];
+
+  TimelineFeedLoading(this.list);
+}
 
 class TimelineFeedSuccess extends TimelineFeedState {
   final List<Data> list;

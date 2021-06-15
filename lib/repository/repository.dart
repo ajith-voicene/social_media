@@ -34,6 +34,15 @@ class Repository {
   Future<Either<Failure, String>> onLiked(int like, String postId) {
     return repoExecute<String>(() => netowrk.onLiked(like, postId));
   }
+
+  Future<Either<Failure, List<Comment>>> getComments(String postId) async {
+    return repoExecute<List<Comment>>(() => netowrk.getComments(postId));
+  }
+
+  Future<Either<Failure, String>> addComment(
+      String postId, String content) async {
+    return repoExecute<String>(() => netowrk.addComment(postId, content));
+  }
 }
 
 class RemoteNetwork {
@@ -153,6 +162,43 @@ class RemoteNetwork {
         ));
 
     String msg = response.data['message'];
-    return msg;
+    bool success = response.data['success'];
+    return success ? null : msg;
+  }
+
+  Future<List<Comment>> getComments(String postId) async {
+    final response = await _client.get(getCommentsUrl + postId,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    List<Comment> list = [];
+    (response.data['data'] as List).forEach((element) {
+      list.add(Comment.fromMap(element));
+    });
+
+    return list;
+  }
+
+  Future<String> addComment(String postId, String content) async {
+    final response = await _client.post(commentPostUrl,
+        data: FormData.fromMap({
+          "post_id": postId,
+          "content": content,
+        }),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+
+    String msg = response.data['message'];
+    bool success = response.data['success'];
+    return success ? null : msg;
   }
 }

@@ -6,11 +6,11 @@ class Data {
   final int userId;
   final int id;
   final String content;
-  final int isLiked;
+  int isLiked;
   final String firstAttachmentType;
   final String firstAttachmentUrl;
-  final int likes;
-  final int comments;
+  int likes;
+  int comments;
   final String createdAt;
   final String privacy;
   final List<Attachment> attachment;
@@ -69,6 +69,38 @@ class Data {
   String toJson() => json.encode(toMap());
 
   factory Data.fromJson(String source) => Data.fromMap(json.decode(source));
+
+  Data copyWith({
+    String userName,
+    String postUserPhoto,
+    int userId,
+    int id,
+    String content,
+    int isLiked,
+    String firstAttachmentType,
+    String firstAttachmentUrl,
+    int likes,
+    int comments,
+    String createdAt,
+    String privacy,
+    List<Attachment> attachment,
+  }) {
+    return Data(
+      userName: userName ?? this.userName,
+      postUserPhoto: postUserPhoto ?? this.postUserPhoto,
+      userId: userId ?? this.userId,
+      id: id ?? this.id,
+      content: content ?? this.content,
+      isLiked: isLiked ?? this.isLiked,
+      firstAttachmentType: firstAttachmentType ?? this.firstAttachmentType,
+      firstAttachmentUrl: firstAttachmentUrl ?? this.firstAttachmentUrl,
+      likes: likes ?? this.likes,
+      comments: comments ?? this.comments,
+      createdAt: createdAt ?? this.createdAt,
+      privacy: privacy ?? this.privacy,
+      attachment: attachment ?? this.attachment,
+    );
+  }
 }
 
 class Attachment {
@@ -105,4 +137,52 @@ class Attachment {
 
   factory Attachment.fromJson(String source) =>
       Attachment.fromMap(json.decode(source));
+}
+
+class Comment {
+  final String userName;
+  final String commentUserPhoto;
+  final int userId;
+  final int id;
+  final String content;
+  final int postId;
+  final String createdAt;
+  Comment({
+    this.userName,
+    this.commentUserPhoto,
+    this.userId,
+    this.id,
+    this.content,
+    this.postId,
+    this.createdAt,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'user_name': userName,
+      'comment_user_photo': commentUserPhoto,
+      'user_id': userId,
+      'id': id,
+      'content': content,
+      'post_id': postId,
+      'created_at': createdAt,
+    };
+  }
+
+  factory Comment.fromMap(Map<String, dynamic> map) {
+    return Comment(
+      userName: map['user_name'],
+      commentUserPhoto: map['comment_user_photo'],
+      userId: map['user_id'],
+      id: map['id'],
+      content: map['content'],
+      postId: map['post_id'],
+      createdAt: map['created_at'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Comment.fromJson(String source) =>
+      Comment.fromMap(json.decode(source));
 }

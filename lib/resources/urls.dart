@@ -8,5 +8,5 @@ String viewAllUsers = link + "view/users/all";
 String singleUserUrl = link + "view/user/";
 String reactPostUrl = link + "post/react";
 String commentPostUrl = link + "post/comment/create";
-String getCommentsUrl = link + "/user/timeline/comment/";
-String getSinglePostUrl = link + "/post/show/";
+String getCommentsUrl = link + "user/timeline/comment/";
+String getSinglePostUrl = link + "post/show/";

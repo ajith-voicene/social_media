@@ -1,35 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/common_widgets/robustImage.dart';
 import 'package:social_media/features/Timeline/bloc/like_button/likebutton_cubit.dart';
+import 'package:social_media/features/Timeline/pages/comment_page.dart';
 import 'package:social_media/model/home_models.dart';
 import 'package:social_media/utils/alerts.dart';
 
-import '../../../profile.dart';
 import '../../../single_view.dart';
 
 class PostCard extends StatefulWidget {
   final Data data;
-  const PostCard(this.data, {Key key}) : super(key: key);
+  final bool isComment;
+
+  final Function(Data) onLiked;
+  const PostCard(this.data, {Key key, this.isComment = false, this.onLiked})
+      : super(key: key);
 
   @override
   _PostCardState createState() => _PostCardState();
 }
 
 class _PostCardState extends State<PostCard> {
-  String type = "0";
-  int likeCount;
-
-  int liked;
+  Data newData;
 
   @override
   void initState() {
     super.initState();
-    likeCount = widget.data.likes ?? 0;
-
-    liked = widget.data.isLiked;
+    newData = widget.data;
   }
 
   @override
@@ -60,8 +58,8 @@ class _PostCardState extends State<PostCard> {
                                 decoration: new BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     image: new DecorationImage(
-                                      image: NetworkImage(
-                                          widget.data.postUserPhoto),
+                                      image:
+                                          NetworkImage(newData.postUserPhoto),
                                       fit: BoxFit.cover,
                                     )),
                                 // width: 60,
@@ -85,7 +83,7 @@ class _PostCardState extends State<PostCard> {
                                     //         .getInstance();
                                     // prefs.setString(
                                     //     'User_Id',
-                                    //     widget.data
+                                    //     newData
                                     //         .userId
                                     //         .toString());
                                     // if (myId ==
@@ -110,7 +108,7 @@ class _PostCardState extends State<PostCard> {
                                     padding:
                                         const EdgeInsets.fromLTRB(15, 10, 0, 0),
                                     child: Text(
-                                      widget.data.userName,
+                                      newData.userName,
                                       style: TextStyle(
                                           fontSize: 18,
                                           color: Colors.black,
@@ -124,8 +122,7 @@ class _PostCardState extends State<PostCard> {
                                   child: Row(
                                     children: [
                                       Text(
-                                        widget.data.createdAt.split("T")[0] +
-                                            "   ",
+                                        newData.createdAt.split("T")[0] + "   ",
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.black,
@@ -149,35 +146,36 @@ class _PostCardState extends State<PostCard> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     child: Text(
-                      widget.data.content,
+                      newData.content,
                       style: TextStyle(fontSize: 16.0, color: Colors.black),
                     ),
                   ),
                 ),
                 // ignore: unrelated_type_equality_checks
-                (widget.data.firstAttachmentType == "image/jpeg" ||
-                        widget.data.firstAttachmentType == "image/gif")
+                (newData.firstAttachmentType == "image/jpeg" ||
+                        newData.firstAttachmentType == "image/gif")
                     ? InkWell(
                         onTap: () async {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SingleView(widget.data)));
+                              builder: (context) => SingleView(newData)));
                         },
                         child: SizedBox(
                           height: 250,
-                          child: RobustFadeInImage(
-                              imageUrl: widget.data.firstAttachmentUrl,
-                              fit: BoxFit.contain),
+                          child: Image.network(newData.firstAttachmentUrl),
+                          // RobustFadeInImage(
+                          //     imageUrl: newData.firstAttachmentUrl,
+                          //     fit: BoxFit.contain),
                         ),
                       )
                     : Container(
                         height: 0,
                       ),
 
-                (widget.data.firstAttachmentType == "video/mp4")
+                (newData.firstAttachmentType == "video/mp4")
                     ? InkWell(
                         onTap: () async {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SingleView(widget.data)));
+                              builder: (context) => SingleView(newData)));
                         },
                         child: Container(
                           height: 250,
@@ -205,7 +203,7 @@ class _PostCardState extends State<PostCard> {
                               size: 20,
                             ),
                             Text(
-                              "  " + "$likeCount",
+                              "  " + "${newData.likes}",
                               style: TextStyle(
                                 fontSize: 15.0,
                                 color: Colors.black,
@@ -218,7 +216,7 @@ class _PostCardState extends State<PostCard> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 5, 5, 0),
                         child: Text(
-                          widget.data.comments.toString() + " Comments",
+                          newData.comments.toString() + " Comments",
                           style: TextStyle(
                             fontSize: 15.0,
                             color: Colors.black,
@@ -238,71 +236,31 @@ class _PostCardState extends State<PostCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       LikeButton(
-                        liked: liked,
-                        id: widget.data.id,
+                        liked: newData.isLiked,
+                        id: newData.id,
                         onLiked: (like) {
-                          liked = like;
                           if (like == 1)
-                            likeCount += 1;
+                            newData = newData.copyWith(
+                                likes: newData.likes += 1, isLiked: 1);
                           else
-                            likeCount -= 1;
-                          setState(() {});
+                            newData = newData.copyWith(
+                                likes: newData.likes -= 1, isLiked: 0);
+                          widget.onLiked(newData);
+                          if (!widget.isComment) setState(() {});
                         },
                       ),
                       InkWell(
                         onTap: () async {
-                          // SharedPreferences prefs =
-                          //     await SharedPreferences
-                          //         .getInstance();
-                          // prefs.setString(
-                          //     'Post_Id',
-                          //     widget.data.id
-                          //         .toString());
-                          // prefs.setString(
-                          //     'post_user_photo',
-                          //     widget.data
-                          //         .postUserPhoto);
-                          // prefs.setString(
-                          //     'user_name',
-                          //     widget.data
-                          //         .userName);
-                          // prefs.setString(
-                          //     'content',
-                          //     widget.data
-                          //         .content);
-                          // prefs.setString(
-                          //     'first_attachment_url',
-                          //     widget.data
-                          //         .firstAttachmentUrl);
-                          // prefs.setString(
-                          //     'likes',
-                          //     widget.data.likes
-                          //         .toString());
-                          // prefs.setString(
-                          //     'is_liked',
-                          //     state
-                          //         .list[index].isLiked
-                          //         .toString());
-                          // prefs.setString(
-                          //     'comments',
-                          //     widget.data
-                          //         .comments
-                          //         .toString());
-                          // prefs.setString(
-                          //     'created_at',
-                          //     widget.data
-                          //         .createdAt);
-                          // prefs.setString(
-                          //     'first_attachment_type',
-                          //     widget.data
-                          //         .firstAttachmentType);
-                          // Navigator.of(context)
-                          //     .pushAndRemoveUntil(
-                          //         CupertinoPageRoute(
-                          //             builder:
-                          //                 (context) =>
-                          //                     CommentPage()),
-                          //         (r) => false);
+                          if (!widget.isComment)
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(
+                                    builder: (context) => CommentPage(
+                                          data: newData,
+                                        )))
+                                .then((value) {
+                              newData = value;
+                              setState(() {});
+                            });
                         },
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 5, 0, 8),
@@ -387,15 +345,11 @@ class _LikeButtonState extends State<LikeButton> {
             return InkWell(
               onTap: () {
                 if (isLiked) {
-                  setState(() {
-                    widget.onLiked(0);
-                    cont.read<LikebuttonCubit>().onLiked(0, "${widget.id}");
-                  });
+                  widget.onLiked(0);
+                  cont.read<LikebuttonCubit>().onLiked(0, "${widget.id}");
                 } else {
-                  setState(() {
-                    widget.onLiked(1);
-                    cont.read<LikebuttonCubit>().onLiked(1, "${widget.id}");
-                  });
+                  widget.onLiked(1);
+                  cont.read<LikebuttonCubit>().onLiked(1, "${widget.id}");
                 }
               },
               child: Padding(

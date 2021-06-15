@@ -11,10 +11,13 @@ part 'timelineFeed_state.dart';
 class TimelineFeedCubit extends Cubit<TimelineFeedState> {
   TimelineFeedCubit() : super(TimelineFeedInitial());
   final Repository repo = Repository();
+  List<Data> list = [];
   Future getPosts() async {
-    emit(TimelineFeedLoading());
+    emit(TimelineFeedLoading(list));
     final result = await repo.getPosts();
-    result.fold(
-        (l) => emit(TimelineFeedError(l)), (r) => emit(TimelineFeedSuccess(r)));
+    result.fold((l) => emit(TimelineFeedError(l)), (r) {
+      list = r;
+      emit(TimelineFeedSuccess(r));
+    });
   }
 }
