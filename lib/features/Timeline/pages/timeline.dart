@@ -5,7 +5,7 @@ import 'package:social_media/features/Timeline/bloc/timelineFeed/timelineFeed_cu
 import '../../../Add_friends.dart';
 import '../../../Drawers.dart';
 import 'Home.dart';
-import '../../../profile.dart';
+import '../../profile/pages/profile.dart';
 import '../../../users.dart';
 
 class TimeLine extends StatefulWidget {

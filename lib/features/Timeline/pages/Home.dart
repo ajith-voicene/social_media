@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
+import 'package:social_media/common_widgets/error_page.dart';
 import 'package:social_media/features/Timeline/bloc/timelineFeed/timelineFeed_cubit.dart';
 import 'package:social_media/features/Timeline/widget/postCard.dart';
 
@@ -37,10 +38,20 @@ class _HomeState extends State<Home> {
               resizeToAvoidBottomInset: false,
               body: BlocConsumer<TimelineFeedCubit, TimelineFeedState>(
                   listener: (context, state) {
-                // if (state is TimelineFeedSuccess)
+                // if (state is TimelineFeedSuccess) print(state.list.length);
               }, builder: (context, state) {
-                if (state is TimelineFeedSuccess ||
-                    state is TimelineFeedLoading)
+                // print(state);
+                if (state is TimelineFeedError)
+                  return ErrorPage(
+                    title: state.error.title,
+                    subtitle: state.error.message,
+                    onRetry: () {
+                      context.read<TimelineFeedCubit>().getPosts();
+                    },
+                  );
+                if (state is TimelineFeedSuccess)
+                  return SingleChildScrollView(child: child(state));
+                if (state is TimelineFeedLoading)
                   return SingleChildScrollView(child: child(state));
                 return CommonFullProgressIndicator(
                   message: "Loading posts...",
@@ -70,7 +81,9 @@ class _HomeState extends State<Home> {
                         return CreatePost();
                       },
                     ),
-                  );
+                  ).then((value) {
+                    context.read<TimelineFeedCubit>().getPosts();
+                  });
                 },
                 controller: _textcntrl,
                 keyboardType: null,
@@ -240,7 +253,6 @@ class _HomeState extends State<Home> {
     // <------ CHANGED THIS LINE
 
     final SharedPreferences pref = await SharedPreferences.getInstance();
-    String token = pref.getString("Token");
     // String post_id = pref.getString("Post_Id");
     // print("post_id==");
     // print(post_id);

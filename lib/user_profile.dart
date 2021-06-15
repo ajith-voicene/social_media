@@ -3,10 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(user_profile());
-}
-
 // ignore: camel_case_types
 class user_profile extends StatefulWidget {
   @override
@@ -232,57 +228,5 @@ class user_profile_State extends State<user_profile> {
         ],
       ),
     );
-  }
-
-  Future<String> user_profilesss() async {
-    // <------ CHANGED THIS LINE
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("Token");
-    userId = prefs.getString('User_Id');
-    print("token123");
-    print(token);
-    // final response = await http.get(
-    //   single_user+userId,
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Accept': 'application/json',
-    //     'Authorization': 'Bearer $token'
-    //   },
-    // );
-    // Map<String, dynamic> responseJson = json.decode(response.body);
-    // print(responseJson);
-    // var message,success;
-    // message = responseJson["message"];
-    // success = responseJson["success"];
-    // if (success == true) {
-    //   SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   prefs.setString('User_Name', responseJson['data']['name']);
-    //   prefs.setString('userEmailId', responseJson['data']['email']);
-    //   prefs.setString('User_profile_photo_url', responseJson['data']['profile_photo_url']);
-    // print('RETURNING: ' + response.body);
-    // Fluttertoast.showToast(
-    //     msg:message,
-    //     toastLength: Toast.LENGTH_LONG,
-    //     gravity: ToastGravity.BOTTOM,
-    //     timeInSecForIos: 1,
-    //     backgroundColor: Colors.black,
-    //     textColor: Colors.white,
-    //     fontSize: 14.0
-    // );
-
-    // } else {
-    //   Fluttertoast.showToast(
-    //       msg:message,
-    //       toastLength: Toast.LENGTH_LONG,
-    //       gravity: ToastGravity.BOTTOM,
-    //       timeInSecForIos: 1,
-    //       backgroundColor: Colors.black,
-    //       textColor: Colors.white,
-    //       fontSize: 14.0
-    //   );
-    //   throw Exception('Failed to load post');
-
-    // }
   }
 }

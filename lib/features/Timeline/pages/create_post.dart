@@ -130,7 +130,7 @@ class _CreatePostState extends State<CreatePost> {
                     if (state.success) Alerts.showToast("Post uploded");
                   }
                 }, builder: (ctx, state) {
-                  print(state);
+                  // print(state);
                   if (state is CreatePostLoading)
                     return CommonFullProgressIndicator(
                       message: "Uploading...",

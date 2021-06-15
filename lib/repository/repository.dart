@@ -43,6 +43,16 @@ class Repository {
       String postId, String content) async {
     return repoExecute<String>(() => netowrk.addComment(postId, content));
   }
+
+  Future<Either<Failure, String>> editProfile(
+    File file,
+    String name,
+  ) {
+    return repoExecute<String>(() => netowrk.editProfile(
+          file,
+          name,
+        ));
+  }
 }
 
 class RemoteNetwork {
@@ -93,15 +103,22 @@ class RemoteNetwork {
   }
 
   Future<bool> createPost(File file, String text) async {
-    final mime = lookupMimeType(file.path).split("/");
-    final fileData = await MultipartFile.fromFile(
-      file.path,
-      contentType: MediaType(mime.first, mime.last),
-    );
-    final FormData formData = FormData.fromMap({
-      "attachment[0]": fileData,
-      "content": text,
-    });
+    FormData formData;
+    if (file != null) {
+      final mime = lookupMimeType(file.path).split("/");
+      final fileData = await MultipartFile.fromFile(
+        file.path,
+        contentType: MediaType(mime.first, mime.last),
+      );
+      formData = FormData.fromMap({
+        "attachment[0]": fileData,
+        "content": text,
+      });
+    } else
+      formData = FormData.fromMap({
+        "content": text,
+      });
+
     final response = await _client.post(createPostUrl,
         data: formData,
         options: Options(
@@ -200,5 +217,39 @@ class RemoteNetwork {
     String msg = response.data['message'];
     bool success = response.data['success'];
     return success ? null : msg;
+  }
+
+  Future<String> editProfile(File file, String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    FormData formData;
+    if (file != null) {
+      final mime = lookupMimeType(file.path).split("/");
+      final fileData = await MultipartFile.fromFile(
+        file.path,
+        contentType: MediaType(mime.first, mime.last),
+      );
+      formData =
+          FormData.fromMap({"avatar": fileData, "name": name, "gender": 20});
+    } else
+      formData = FormData.fromMap({"name": name, "gender": 20});
+
+    final response = await _client.post(myProfileUrl,
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+
+    String msg = response.data['message'];
+    bool success = response.data['success'];
+    if (success) {
+      Constant.photoUrl = response.data['data']['profile_photo_url'];
+      Constant.username = name;
+      prefs.setString('photo', Constant.photoUrl);
+    }
+    return success ? msg : null;
   }
 }

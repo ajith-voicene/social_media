@@ -32,6 +32,7 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.data.content);
     return Container(
         margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
         child: Card(

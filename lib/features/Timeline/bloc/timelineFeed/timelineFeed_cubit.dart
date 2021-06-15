@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:social_media/common_widgets/failure.dart';
@@ -17,6 +15,7 @@ class TimelineFeedCubit extends Cubit<TimelineFeedState> {
     final result = await repo.getPosts();
     result.fold((l) => emit(TimelineFeedError(l)), (r) {
       list = r;
+      print(r.first.content);
       emit(TimelineFeedSuccess(r));
     });
   }
