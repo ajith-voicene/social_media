@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
-import 'package:social_media/features/profile/blocs/cubit/editprofile_cubit.dart';
+import 'package:social_media/features/profile/blocs/edit_Profile/editprofile_cubit.dart';
 import 'package:social_media/utils/alerts.dart';
 import 'package:social_media/utils/constants.dart';
 
@@ -58,6 +57,9 @@ class _ProfileState extends State<Profile> {
       profilePhotoUrl = "https://picsum.photos/250?image=9";
     } else {}
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Edit Profile"),
+      ),
       resizeToAvoidBottomInset: false,
       body: BlocProvider<EditprofileCubit>(
         create: (context) => EditprofileCubit(),

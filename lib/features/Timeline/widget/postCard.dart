@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_media/common_widgets/robustImage.dart';
+import 'package:social_media/common_widgets/circleAvatar.dart';
 import 'package:social_media/features/Timeline/bloc/like_button/likebutton_cubit.dart';
 import 'package:social_media/features/Timeline/pages/comment_page.dart';
+import 'package:social_media/features/profile/pages/user_profile.dart';
 import 'package:social_media/model/home_models.dart';
 import 'package:social_media/utils/alerts.dart';
 
@@ -49,24 +50,19 @@ class _PostCardState extends State<PostCard> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.blue,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: new Container(
-                                height: 50,
-                                decoration: new BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    image: new DecorationImage(
-                                      image:
-                                          NetworkImage(newData.postUserPhoto),
-                                      fit: BoxFit.cover,
-                                    )),
-                                // width: 60,
-                              ),
-                            ),
-                          ),
+                          child: CommonAvatar(
+                              onClick: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UserProfile(
+                                        name: newData.userName,
+                                        userId: newData.userId.toString(),
+                                      ),
+                                    ));
+                              },
+                              size: 20,
+                              url: newData.postUserPhoto),
                         ),
                         SizedBox(
                           width: 10,

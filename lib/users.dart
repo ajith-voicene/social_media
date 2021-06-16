@@ -1,27 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/resources/urls.dart';
-import 'package:social_media/user_profile.dart';
 
+import 'model/home_models.dart';
 import 'utils/constants.dart';
-
-class User {
-  final String profilePhotoUrl;
-  final String name;
-  final int id;
-  final String email;
-
-  User({this.profilePhotoUrl, this.name, this.id, this.email});
-  factory User.fromJson(Map<String, dynamic> parsedJson) {
-    return User(
-      profilePhotoUrl: parsedJson['profile_photo_url'],
-      name: parsedJson['name'],
-      id: parsedJson['id'],
-      email: parsedJson['email'],
-    );
-  }
-}
 
 void main() => runApp(new MaterialApp(home: new Users()));
 

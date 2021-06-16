@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:social_media/common_widgets/common_button.dart';
 
-
-
 class ErrorPage extends StatelessWidget {
-   final String title;
-   final String subtitle;
-   final VoidCallback onRetry;
+  final String title;
+  final String subtitle;
+  final VoidCallback onRetry;
 
-  const ErrorPage({Key key, this.title, this.subtitle, this.onRetry}) : super(key: key);
- @override
+  const ErrorPage({Key key, this.title, this.subtitle, this.onRetry})
+      : super(key: key);
+  @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     return Container(
       width: double.infinity,
-      color: Colors.blue.withOpacity(0.5),
+      color: Colors.blue.withOpacity(0.4),
       // padding: EdgeInsets.symmetric(horizontal: context.blockSizeVertical * 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -28,8 +27,8 @@ class ErrorPage extends StatelessWidget {
           FittedBox(
             child: Text(
               title ?? "Connection Error",
-              style: themeData.textTheme.headline6
-                  .copyWith(color: Colors.black),
+              style:
+                  themeData.textTheme.headline6.copyWith(color: Colors.black),
             ),
           ),
           Text(
@@ -40,9 +39,12 @@ class ErrorPage extends StatelessWidget {
                 color: Colors.black,
                 shadows: [Shadow(color: Colors.white60, blurRadius: 4)]),
           ),
-         
-            
-          CommonButton(onPressed: onRetry, label: "Try Again",),
+
+          CommonButton(
+            color: Colors.red,
+            onPressed: onRetry,
+            label: "Try Again",
+          ),
         ],
       ),
     );

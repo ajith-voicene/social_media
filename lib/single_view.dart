@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/common_widgets/videoPlaterCard.dart';
 import 'package:social_media/model/home_models.dart';
 

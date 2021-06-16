@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media/common_widgets/circleAvatar.dart';
+import 'package:social_media/features/profile/pages/user_profile.dart';
 import 'package:social_media/utils/alerts.dart';
 import 'package:social_media/utils/constants.dart';
 import '../../../common_widgets/commonLoading.dart';
@@ -197,8 +199,18 @@ class _CommentBoxState extends State<CommentBox> {
           borderRadius: BorderRadius.circular(10),
           // side: BorderSide(color: Colors.black),
         ),
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(widget.comment.commentUserPhoto),
+        leading: CommonAvatar(
+          onClick: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserProfile(
+                    userId: widget.comment.userId.toString(),
+                    name: widget.comment.userName,
+                  ),
+                ));
+          },
+          url: widget.comment.commentUserPhoto,
         ),
         tileColor: Colors.grey.shade200,
         title: Padding(

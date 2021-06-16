@@ -148,8 +148,12 @@ class _State extends State<LoginPage> {
                           onTap: () async {
                             GoogleSignInAuthentication
                                 googleSignInAuthentication;
-                            final GoogleSignInAccount googleSignInAccount =
-                                await googleSignIn.signIn();
+                            GoogleSignInAccount googleSignInAccount;
+                            try {
+                              googleSignInAccount = await googleSignIn.signIn();
+                            } catch (error) {
+                              print(error);
+                            }
                             if (googleSignInAccount != null) {
                               googleSignInAuthentication =
                                   await googleSignInAccount.authentication;

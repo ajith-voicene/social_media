@@ -6,4 +6,5 @@ class Constant {
   static String name;
   static String photoUrl;
   static String email;
+  static int id;
 }

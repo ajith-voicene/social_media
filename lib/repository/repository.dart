@@ -53,6 +53,10 @@ class Repository {
           name,
         ));
   }
+
+  Future<Either<Failure, User>> getProfile(String id) {
+    return repoExecute<User>(() => netowrk.getProfile(id));
+  }
 }
 
 class RemoteNetwork {
@@ -69,16 +73,19 @@ class RemoteNetwork {
           "provider": Constant.provider,
           "device_name": Constant.devicename
         }));
-
+    print(response.data);
     success = response.data['success'];
     if (success) {
       Constant.token = response.data['token'];
+      Constant.photoUrl = response.data['data']['profile_photo_url'];
+      Constant.id = response.data['data']['id'];
       prefs.setString('Token', Constant.token);
 
       prefs.setString('name', Constant.name);
       prefs.setString('email', Constant.email);
       prefs.setString('provider', Constant.provider);
       prefs.setString('photo', Constant.photoUrl);
+      prefs.setInt('id', Constant.id);
     }
     return success;
   }
@@ -249,7 +256,23 @@ class RemoteNetwork {
       Constant.photoUrl = response.data['data']['profile_photo_url'];
       Constant.username = name;
       prefs.setString('photo', Constant.photoUrl);
+
+      prefs.setString('username', name);
     }
     return success ? msg : null;
+  }
+
+  Future<User> getProfile(String id) async {
+    final response = await _client.get(singleUserUrl + id,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    print(response.data);
+    User user = User.fromMap(response.data['data']);
+    return user;
   }
 }

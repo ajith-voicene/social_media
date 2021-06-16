@@ -47,35 +47,14 @@ class _TimeLineState extends State<TimeLine> {
               ),
               leading: Text(" "),
               title: appBarTitle,
-              actions: <Widget>[
-                new IconButton(
-                  icon: actionIcon,
-                  onPressed: () {
-                    setState(() {
-                      if (this.actionIcon.icon == Icons.search) {
-                        this.actionIcon = new Icon(Icons.close);
-                        this.appBarTitle = new TextField(
-                          style: new TextStyle(
-                            color: Colors.white,
-                          ),
-                          decoration: new InputDecoration(
-                              prefixIcon:
-                                  new Icon(Icons.search, color: Colors.white),
-                              hintText: " Search...",
-                              hintStyle: new TextStyle(color: Colors.white)),
-                        );
-                      } else {
-                        this.actionIcon = new Icon(Icons.search);
-                        this.appBarTitle = new Text("Social Media");
-                      }
-                    });
-                  },
-                ),
-              ]),
+              actions: <Widget>[Icon(Icons.notifications)]),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: BlocProvider<TimelineFeedCubit>(
-              create: (context) => TimelineFeedCubit()..getPosts(),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider<TimelineFeedCubit>(
+                    create: (context) => TimelineFeedCubit()..getPosts())
+              ],
               child: TabBarView(
                 children: [
                   Container(child: Home()),

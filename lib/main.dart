@@ -34,6 +34,8 @@ class _SplashScreenState extends State<SplashScreen> {
     Constant.email = prefs.getString('email');
     Constant.provider = prefs.getString('provider');
     Constant.photoUrl = prefs.getString('photo');
+    Constant.username = prefs.getString('username');
+    Constant.id = prefs.getInt('id');
     token = Constant.token;
     print(token);
 

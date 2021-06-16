@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:social_media/common_widgets/circleAvatar.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
 import 'package:social_media/common_widgets/videoPlaterCard.dart';
 import 'package:social_media/features/Timeline/bloc/createPost/createPost_cubit.dart';
@@ -152,10 +152,9 @@ class _CreatePostState extends State<CreatePost> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(profilePhotoUrl),
-                  backgroundColor: Colors.blue,
+                child: CommonAvatar(
+                  size: 20,
+                  url: profilePhotoUrl,
                 ),
               ),
               InkWell(

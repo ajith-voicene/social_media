@@ -13,7 +13,9 @@ class TimelineFeedCubit extends Cubit<TimelineFeedState> {
   Future getPosts() async {
     emit(TimelineFeedLoading(list));
     final result = await repo.getPosts();
-    result.fold((l) => emit(TimelineFeedError(l)), (r) {
+    result.fold((l) {
+      emit(TimelineFeedError(l));
+    }, (r) {
       list = r;
       print(r.first.content);
       emit(TimelineFeedSuccess(r));

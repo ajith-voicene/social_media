@@ -186,3 +186,42 @@ class Comment {
   factory Comment.fromJson(String source) =>
       Comment.fromMap(json.decode(source));
 }
+
+class User {
+  final String profilePhotoUrl;
+  final String name;
+  final int id;
+  final String email;
+  final String createdAt;
+  User({
+    this.createdAt,
+    this.profilePhotoUrl,
+    this.name,
+    this.id,
+    this.email,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'profile_photo_url': profilePhotoUrl,
+      'name': name,
+      'id': id,
+      'email': email,
+      'created_at': createdAt,
+    };
+  }
+
+  factory User.fromMap(Map<String, dynamic> map) {
+    return User(
+      profilePhotoUrl: map['profile_photo_url'],
+      name: map['name'],
+      id: map['id'],
+      email: map['email'],
+      createdAt: map['created_at'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory User.fromJson(String source) => User.fromMap(json.decode(source));
+}
