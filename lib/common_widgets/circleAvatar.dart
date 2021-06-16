@@ -13,7 +13,7 @@ class CommonAvatar extends StatelessWidget {
       onTap: onClick,
       child: CircleAvatar(
         radius: size,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.white,
         backgroundImage: NetworkImage(url ??
             "https://www.google.com/url?sa=i&url=https%3A%2F%2Fyorktonrentals.com%2Fagents%2Fbtmak%2F&psig=AOvVaw1RnEw9nyaxoU0WDIGgrSa4&ust=1623850952982000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCPDK_6rimfECFQAAAAAdAAAAABAR"),
       ),

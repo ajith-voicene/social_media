@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/features/Timeline/pages/timeline.dart';
 
-import 'features/login/pages/login_page.dart';
+import 'features/auth/pages/login_page.dart';
 import 'utils/constants.dart';
 
 void main() async {

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
-import 'package:social_media/features/login/bloc/social%20login/social_login_cubit.dart';
+import 'package:social_media/features/auth/bloc/social%20login/social_login_cubit.dart';
 import 'package:social_media/features/Timeline/pages/timeline.dart';
 import 'package:social_media/utils/alerts.dart';
 import 'package:social_media/utils/constants.dart';

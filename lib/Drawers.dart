@@ -1,16 +1,11 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media/features/login/pages/login_page.dart';
-import 'package:social_media/utils/constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:social_media/common_widgets/commonLoading.dart';
+import 'package:social_media/utils/alerts.dart';
 
-import 'resources/urls.dart';
-import 'utils/alerts.dart';
+import 'features/auth/bloc/logout/logout_cubit.dart';
+import 'features/auth/pages/login_page.dart';
 
 class Drawers extends StatefulWidget {
   const Drawers({Key key}) : super(key: key);
@@ -21,54 +16,6 @@ class Drawers extends StatefulWidget {
 
 class _DrawersState extends State<Drawers> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  showAlertDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-      title: Center(
-          child: Text(
-        "Logout Application",
-        style: TextStyle(
-            color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-      )),
-      content: Text("Are you sure, Do you want to Logout the application?",
-          style: TextStyle(color: Colors.black, fontSize: 16)),
-      actions: <Widget>[
-        new GestureDetector(
-          child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: Text(
-                "Close",
-                style: TextStyle(fontSize: 15, color: Colors.black),
-              )),
-        ),
-        SizedBox(
-          height: 16,
-          width: 15,
-        ),
-        InkWell(
-          onTap: () {
-            logout();
-          },
-          child: new GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: Text(
-                "Logout",
-                style: TextStyle(fontSize: 18, color: Colors.blue[800]),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,69 +63,79 @@ class _DrawersState extends State<Drawers> {
             )));
   }
 
-  Future<String> logout() async {
-    // <------ CHANGED THIS LINE
-    googleSignIn.signOut();
+  showAlertDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BlocProvider<LogoutCubit>(
+            create: (context) => LogoutCubit(),
+            child: Builder(
+              builder: (context) => BlocConsumer<LogoutCubit, LogoutState>(
+                listener: (context, state) {
+                  if (state is LogoutSuccess) {
+                    Alerts.showToast("Logout completed");
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (r) => false);
+                  }
+                  if (state is LogoutError) Alerts.showErrorToast(null);
+                },
+                builder: (cont, state) {
+                  if (state is LogoutLoading)
+                    return CommonFullProgressIndicator(
+                      color: Colors.white,
+                      message: "logout processing...",
+                    );
+                  return AlertDialog(
+                    title: Center(
+                        child: Text(
+                      "Logout Application",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    )),
+                    content: Text(
+                        "Are you sure, Do you want to Logout the application?",
+                        style: TextStyle(color: Colors.black, fontSize: 16)),
+                    actions: <Widget>[
+                      new GestureDetector(
+                        child: InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Text(
+                              "Close",
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.black),
+                            )),
+                      ),
+                      SizedBox(
+                        height: 16,
+                        width: 15,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          cont.read<LogoutCubit>().logout();
+                        },
+                        child: new GestureDetector(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                            child: Text(
+                              "Logout",
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.blue[800]),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          );
+        });
 
-    await FacebookAuth.instance.logOut().then((value) {});
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    print("token123");
-
-    final response = await Dio().get(logoutUrl,
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ${Constant.token}'
-          },
-        ));
-    // Map<String, dynamic> responseJson = json.decode(response.body);
-    // print(responseJson);
-    // var message,success;
-    // message = responseJson["message"];
-    // bool success = ;
-    bool success = (response.data["success"]);
-    if (success == true) {
-      Alerts.showToast("Logout completed");
-      prefs.remove("Token");
-      Constant.token = null;
-      //   print("log out");
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => LoginPage()), (r) => false);
-    }
-
-    //   Fluttertoast.showToast(
-    //       msg:message,
-    //       toastLength: Toast.LENGTH_LONG,
-    //       gravity: ToastGravity.BOTTOM,
-    //       timeInSecForIos: 1,
-    //       backgroundColor: Colors.black,
-    //       textColor: Colors.white,
-    //       fontSize: 14.0
-    //   );
-
-    //   Navigator.of(context).push(
-    //     MaterialPageRoute(
-    //       builder: (context) {
-    //         return Homepages();
-    //       },
-    //     ),
-    //   );
-
-    // } else {
-    //   Fluttertoast.showToast(
-    //       msg:message,
-    //       toastLength: Toast.LENGTH_LONG,
-    //       gravity: ToastGravity.BOTTOM,
-    //       timeInSecForIos: 1,
-    //       backgroundColor: Colors.black,
-    //       textColor: Colors.white,
-    //       fontSize: 14.0
-    //   );
-    //   throw Exception('Failed to load post');
-
-    // }
+    // show the dialog
   }
 }
 

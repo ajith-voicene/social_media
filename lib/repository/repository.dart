@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,6 +59,10 @@ class Repository {
   Future<Either<Failure, User>> getProfile(String id) {
     return repoExecute<User>(() => netowrk.getProfile(id));
   }
+
+  Future<Either<Failure, void>> logout() {
+    return repoExecute<void>(() => netowrk.logout());
+  }
 }
 
 class RemoteNetwork {
@@ -91,6 +97,7 @@ class RemoteNetwork {
   }
 
   Future<bool> logout() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
     final SharedPreferences pref = await SharedPreferences.getInstance();
     bool success = false;
     final response = await _client.get(logoutUrl,
@@ -103,6 +110,9 @@ class RemoteNetwork {
         ));
     success = response.data['success'];
     if (success == true) {
+      googleSignIn.signOut();
+
+      await FacebookAuth.instance.logOut();
       pref.remove("Token");
       Constant.token = null;
     }

@@ -4,9 +4,11 @@ class CommonFullProgressIndicator extends StatelessWidget {
   CommonFullProgressIndicator({
     Key key,
     this.message = "Loading",
+    this.color = Colors.black,
   }) : super(key: key);
 
   final String message;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class CommonFullProgressIndicator extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: color),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
