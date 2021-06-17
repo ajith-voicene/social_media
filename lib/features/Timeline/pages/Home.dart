@@ -38,24 +38,21 @@ class _HomeState extends State<Home> {
           child: Scaffold(
               resizeToAvoidBottomInset: false,
               body: BlocConsumer<TimelineFeedCubit, TimelineFeedState>(
-                  listener: (context, state) {
-                // if (state is TimelineFeedSuccess)
-              }, builder: (context, state) {
-                // print(state);
-                if (state is TimelineFeedError)
-                  return ErrorPage(
-                    title: state.error.title,
-                    subtitle: state.error.message,
-                    onRetry: () {
-                      context.read<TimelineFeedCubit>().getPosts();
-                    },
-                  );
-                if (state is TimelineFeedSuccess) return child(state);
-                // if (state is TimelineFeedLoading) return child(state);
-                return CommonFullProgressIndicator(
-                  message: "Loading posts...",
-                );
-              }))),
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    if (state is TimelineFeedError)
+                      return ErrorPage(
+                        title: state.error.title,
+                        subtitle: state.error.message,
+                        onRetry: () {
+                          context.read<TimelineFeedCubit>().getPosts();
+                        },
+                      );
+                    if (state is TimelineFeedSuccess) return child(state);
+                    return CommonFullProgressIndicator(
+                      message: "Loading posts...",
+                    );
+                  }))),
     );
   }
 

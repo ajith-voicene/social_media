@@ -7,6 +7,9 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/common_widgets/doubleResult.dart';
 import 'package:social_media/common_widgets/failure.dart';
@@ -63,6 +66,10 @@ class Repository {
   Future<Either<Failure, void>> logout() {
     return repoExecute<void>(() => netowrk.logout());
   }
+
+  Future<Either<Failure, File>> downloadFile(url, String postid, String ext) {
+    return repoExecute<File>(() => netowrk.downloadFile(url, postid, ext));
+  }
 }
 
 class RemoteNetwork {
@@ -79,7 +86,6 @@ class RemoteNetwork {
           "provider": Constant.provider,
           "device_name": Constant.devicename
         }));
-    print(response.data);
     success = response.data['success'];
     if (success) {
       Constant.token = response.data['token'];
@@ -281,8 +287,21 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data);
     User user = User.fromMap(response.data['data']);
     return user;
+  }
+
+  Future<File> downloadFile(url, String postid, String ext) async {
+    File file;
+    Directory dir = await getTemporaryDirectory();
+    String filepath = dir.path + "/" + postid + ".$ext";
+    final response = await _client.download(
+      url,
+      filepath,
+    );
+    if (response.statusCode != 200) throw NetworkFailure();
+    file = File(filepath);
+    file.readAsBytes();
+    return file;
   }
 }

@@ -17,7 +17,6 @@ class TimelineFeedCubit extends Cubit<TimelineFeedState> {
       emit(TimelineFeedError(l));
     }, (r) {
       list = r;
-      print(r.first.content);
       emit(TimelineFeedSuccess(r));
     });
   }
