@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter/material.dart';
+import 'package:social_media/features/Timeline/bloc/getFriendRequests/friendrequests_cubit.dart';
 import 'package:social_media/features/profile/blocs/edit_Profile/editprofile_cubit.dart';
 import 'package:social_media/utils/alerts.dart';
 import 'package:social_media/utils/constants.dart';
@@ -21,11 +22,13 @@ class _ProfileState extends State<Profile> {
 
   File _image;
   String name, email, base64Image, profilePhotoUrl;
-  TextEditingController _namecntrl = TextEditingController();
-  TextEditingController _usercntrl = TextEditingController();
+  TextEditingController _namecntrl;
+  TextEditingController _usercntrl;
 
   @override
   void initState() {
+    _namecntrl = TextEditingController();
+    _usercntrl = TextEditingController();
     getnames();
     super.initState();
   }
@@ -38,32 +41,18 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    if (name == null) {
-      name = " ";
-    } else {
-      _namecntrl.value = TextEditingValue(
-        text: name,
-        selection: TextSelection.collapsed(offset: name.length),
-      );
-    }
-    if (email == null) {
-      email = " ";
-    } else {
-      _usercntrl.value = TextEditingValue(
-          text: email,
-          selection: TextSelection.collapsed(offset: email.length));
-    }
-    if (profilePhotoUrl == null) {
-      profilePhotoUrl = "https://picsum.photos/250?image=9";
-    } else {}
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Edit Profile"),
-      ),
-      resizeToAvoidBottomInset: false,
-      body: BlocProvider<EditprofileCubit>(
-        create: (context) => EditprofileCubit(),
-        child: Builder(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<EditprofileCubit>(
+          create: (context) => EditprofileCubit(),
+        ),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Edit Profile"),
+        ),
+        resizeToAvoidBottomInset: false,
+        body: Builder(
           builder: (context) =>
               BlocConsumer<EditprofileCubit, EditprofileState>(
             listener: (context, state) {

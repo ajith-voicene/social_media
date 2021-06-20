@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media/common_widgets/friendButton.dart';
+import 'package:social_media/features/Timeline/bloc/getFriendRequests/friendrequests_cubit.dart';
 import 'package:social_media/utils/constants.dart';
 
 import '../../../common_widgets/circleAvatar.dart';
@@ -16,14 +18,21 @@ class UserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(name),
-      ),
-      resizeToAvoidBottomInset: false,
-      body: BlocProvider<GetProfileCubit>(
-        create: (context) => GetProfileCubit()..getProfile(userId),
-        child: Builder(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<FriendrequestsCubit>(
+          create: (context) => FriendrequestsCubit()..getFriendrequests(),
+        ),
+        BlocProvider<GetProfileCubit>(
+          create: (context) => GetProfileCubit()..getProfile(userId),
+        ),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(name),
+        ),
+        resizeToAvoidBottomInset: false,
+        body: Builder(
           builder: (context) => BlocBuilder<GetProfileCubit, GetProfileState>(
             builder: (context, state) {
               if (state is GetProfileError)
@@ -34,7 +43,7 @@ class UserProfile extends StatelessWidget {
                     context.read<GetProfileCubit>().getProfile(userId);
                   },
                 );
-              if (state is GetProfileSuccess)
+              if (state is GetProfileSuccess) {
                 return SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,6 +67,20 @@ class UserProfile extends StatelessWidget {
                                   ));
                             },
                             child: Text("EditProfile")),
+                      if (userId != Constant.id.toString())
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: FriendButton(
+                            requestedBy: state.user.requestedUserId,
+                            status: state.user.isFriend,
+                            userId: state.user.id,
+                            refresh: () {
+                              context
+                                  .read<GetProfileCubit>()
+                                  .getProfile(userId);
+                            },
+                          ),
+                        ),
                       SizedBox(
                         height: 15,
                       ),
@@ -71,6 +94,7 @@ class UserProfile extends StatelessWidget {
                     ],
                   ),
                 );
+              }
               return CommonFullProgressIndicator(
                 message: "Fetching user profile...",
               );

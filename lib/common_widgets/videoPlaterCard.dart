@@ -21,7 +21,6 @@ class _VideoPlayCardState extends State<VideoPlayCard> {
   @override
   void initState() {
     super.initState();
-    initialization();
   }
 
   @override
@@ -43,6 +42,7 @@ class _VideoPlayCardState extends State<VideoPlayCard> {
 
   @override
   Widget build(BuildContext context) {
+    initialization();
     if (widget.autoPlay) _betterPlayerController.play();
     return BetterPlayer(
       controller: _betterPlayerController,

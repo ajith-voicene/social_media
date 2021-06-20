@@ -193,12 +193,18 @@ class User {
   final int id;
   final String email;
   final String createdAt;
+  final String isFriend;
+  final int friendRequests;
+  final int requestedUserId;
   User({
+    this.requestedUserId,
     this.createdAt,
     this.profilePhotoUrl,
     this.name,
     this.id,
     this.email,
+    this.isFriend,
+    this.friendRequests = 0,
   });
 
   Map<String, dynamic> toMap() {
@@ -208,17 +214,22 @@ class User {
       'id': id,
       'email': email,
       'created_at': createdAt,
+      'is_friend': isFriend,
+      'friend_requests': friendRequests,
+      'requested_user_id': requestedUserId,
     };
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      profilePhotoUrl: map['profile_photo_url'],
-      name: map['name'],
-      id: map['id'],
-      email: map['email'],
-      createdAt: map['created_at'],
-    );
+        profilePhotoUrl: map['profile_photo_url'],
+        name: map['name'],
+        id: map['id'],
+        email: map['email'],
+        createdAt: map['created_at'],
+        isFriend: map['is_friend'],
+        friendRequests: map['friend_requests'],
+        requestedUserId: map['requested_user_id']);
   }
 
   String toJson() => json.encode(toMap());

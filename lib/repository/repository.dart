@@ -8,7 +8,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/common_widgets/doubleResult.dart';
@@ -70,6 +69,23 @@ class Repository {
   Future<Either<Failure, File>> downloadFile(url, String postid, String ext) {
     return repoExecute<File>(() => netowrk.downloadFile(url, postid, ext));
   }
+
+  Future<Either<Failure, List<User>>> searchUsers(String name) {
+    return repoExecute<List<User>>(() => netowrk.searchUsers(name));
+  }
+
+  Future<Either<Failure, bool>> manageFriendrequest(
+      String type, String userID) {
+    return repoExecute<bool>(() => netowrk.manageFriendrequest(type, userID));
+  }
+
+  Future<Either<Failure, List<User>>> getFriendrequests() {
+    return repoExecute<List<User>>(() => netowrk.getFriendrequests());
+  }
+
+  Future<Either<Failure, List<User>>> getfriendsList() {
+    return repoExecute<List<User>>(() => netowrk.getfriendsList());
+  }
 }
 
 class RemoteNetwork {
@@ -116,11 +132,15 @@ class RemoteNetwork {
         ));
     success = response.data['success'];
     if (success == true) {
-      googleSignIn.signOut();
+      try {
+        googleSignIn.signOut();
 
-      await FacebookAuth.instance.logOut();
-      pref.remove("Token");
-      Constant.token = null;
+        await FacebookAuth.instance.logOut();
+        pref.remove("Token");
+        Constant.token = null;
+      } catch (err) {
+        print(err);
+      }
     }
     return success;
   }
@@ -279,7 +299,9 @@ class RemoteNetwork {
   }
 
   Future<User> getProfile(String id) async {
-    final response = await _client.get(singleUserUrl + id,
+    String path =
+        id == Constant.id.toString() ? myProfileUrl : singleUserUrl + id;
+    final response = await _client.get(path,
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -287,6 +309,7 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
+    print(response.data);
     User user = User.fromMap(response.data['data']);
     return user;
   }
@@ -303,5 +326,73 @@ class RemoteNetwork {
     file = File(filepath);
     file.readAsBytes();
     return file;
+  }
+
+  Future<List<User>> searchUsers(String name) async {
+    String filter = name == null ? null : "?search=$name";
+    final response = await _client.get(searchUserUrl + filter,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    List<User> list = [];
+    (response.data['data'] as List).forEach((element) {
+      list.add(User.fromMap(element));
+    });
+    return list;
+  }
+
+  Future<bool> manageFriendrequest(String type, String userID) async {
+    // type="accept","add","reject","block","delete";
+    FormData formData = FormData.fromMap({"user_id": userID, "type": type});
+    final response = await _client.post(manageFriendUrl,
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    // String msg = response.data['message'];
+
+    bool success = response.data['success'];
+    return success;
+  }
+
+  Future<List<User>> getFriendrequests() async {
+    final response = await _client.get(getFriendRequestsUrl,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    List<User> list = [];
+    (response.data['received'] as List).forEach((element) {
+      list.add(User.fromMap(element));
+    });
+    return list;
+  }
+
+  Future<List<User>> getfriendsList() async {
+    final response = await _client.get(viewAllFriendsUrl,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    print(response.data);
+    List<User> list = [];
+    (response.data['data'] as List).forEach((element) {
+      list.add(User.fromMap(element));
+    });
+    return list;
   }
 }

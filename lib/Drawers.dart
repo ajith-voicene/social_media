@@ -4,8 +4,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
 import 'package:social_media/utils/alerts.dart';
 
+import 'features/Timeline/pages/Add_friends.dart';
 import 'features/auth/bloc/logout/logout_cubit.dart';
 import 'features/auth/pages/login_page.dart';
+import 'features/profile/pages/friendRequests.dart';
+import 'features/profile/pages/user_profile.dart';
+import 'features/profile/pages/viewfriends.dart';
+import 'utils/constants.dart';
 
 class Drawers extends StatefulWidget {
   const Drawers({Key key}) : super(key: key);
@@ -20,6 +25,44 @@ class _DrawersState extends State<Drawers> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width / 1;
+    List<Choice> choices = <Choice>[
+      Choice(
+          title: 'Find Friends',
+          icon: Icons.person_search,
+          onClick: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AddFriends()));
+          }),
+      Choice(
+          title: 'Friend requests',
+          icon: Icons.person_add_alt_1,
+          onClick: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => FriendRequestsPage()));
+          }),
+      Choice(
+          title: 'Profile',
+          icon: Icons.person,
+          onClick: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserProfile(
+                    userId: Constant.id.toString(),
+                    name: Constant.name,
+                  ),
+                ));
+          }),
+      Choice(
+          title: 'Friends',
+          icon: Icons.group,
+          onClick: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => FriendsList()));
+          }),
+      Choice(title: 'Groups', icon: Icons.group, onClick: () {}),
+      Choice(title: 'Messages', icon: Icons.message, onClick: () {}),
+    ];
     return MaterialApp(
         home: Scaffold(
             resizeToAvoidBottomInset: false,
@@ -32,7 +75,9 @@ class _DrawersState extends State<Drawers> {
                       mainAxisSpacing: 1.0,
                       childAspectRatio: screenWidth / 180.0,
                       children: List.generate(choices.length, (index) {
-                        return SelectCard(choice: choices[index]);
+                        return SelectCard(
+                          choice: choices[index],
+                        );
                       })),
                 ),
                 InkWell(
@@ -140,23 +185,15 @@ class _DrawersState extends State<Drawers> {
 }
 
 class Choice {
-  const Choice({this.title, this.icon});
+  const Choice({
+    this.title,
+    this.icon,
+    this.onClick,
+  });
   final String title;
   final IconData icon;
+  final VoidCallback onClick;
 }
-
-const List<Choice> choices = const <Choice>[
-  const Choice(title: 'Find Friends', icon: Icons.search),
-  const Choice(title: 'Marketplace', icon: Icons.place),
-  const Choice(title: 'Groups', icon: Icons.group),
-  const Choice(title: 'Videos on Watch', icon: Icons.video_collection),
-  const Choice(title: 'Saved', icon: Icons.save),
-  const Choice(title: 'Pages', icon: Icons.pages),
-  const Choice(title: 'Events', icon: Icons.event_sharp),
-  const Choice(title: 'Jobs', icon: Icons.work),
-  const Choice(title: 'Naerby Friends', icon: Icons.near_me),
-  const Choice(title: 'Update Friends', icon: Icons.update),
-];
 
 class SelectCard extends StatelessWidget {
   const SelectCard({Key key, this.choice}) : super(key: key);
@@ -164,26 +201,31 @@ class SelectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        elevation: 5,
-        color: Colors.white,
-        child: Center(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: Center(
-                      child: Icon(choice.icon, size: 30.0, color: Colors.blue)),
-                )),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                  child: Center(
-                      child: Text(choice.title,
-                          style: TextStyle(color: Colors.black, fontSize: 15))),
-                ),
-              ]),
-        ));
+    return InkWell(
+      onTap: choice.onClick,
+      child: Card(
+          elevation: 5,
+          color: Colors.white,
+          child: Center(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: Center(
+                        child:
+                            Icon(choice.icon, size: 30.0, color: Colors.blue)),
+                  )),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                    child: Center(
+                        child: Text(choice.title,
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 15))),
+                  ),
+                ]),
+          )),
+    );
   }
 }

@@ -52,7 +52,6 @@ class _CreatePostState extends State<CreatePost> {
       Future.delayed(Duration(seconds: 1), () {
         setState(() {});
       });
-      setState(() {});
     }
   }
 

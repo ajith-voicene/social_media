@@ -13,7 +13,7 @@ class GetProfileCubit extends Cubit<GetProfileState> {
     final result = await repo.getProfile(
       id,
     );
-    result.fold(
+    return result.fold(
         (l) => emit(GetProfileError(l)), (r) => emit(GetProfileSuccess(r)));
   }
 }
