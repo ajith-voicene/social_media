@@ -19,7 +19,6 @@ class FriendButton extends StatefulWidget {
 
 class _FriendButtonState extends State<FriendButton> {
   String value;
-  String selectedValue;
 
   @override
   void initState() {
@@ -35,7 +34,8 @@ class _FriendButtonState extends State<FriendButton> {
     if (widget.status == "friend") value = "Friend";
     if (widget.status == "pending") value = "Requested";
     if (widget.status == null || widget.status == "rejected") value = null;
-    if (widget.status == "block") value = "Block";
+    if (widget.status == "blocked") value = "Blocked";
+    if (widget.status == "hidden") value = "Hidden";
     print(widget.status);
     print(value);
     return BlocProvider<MnageFriendrequestCubit>(
@@ -55,7 +55,9 @@ class _FriendButtonState extends State<FriendButton> {
                     onPressed: () {},
                   );
                 if (value != "Friend" &&
+                    value != "Hidden" &&
                     widget.status != "rejected" &&
+                    widget.status != "blocked" &&
                     widget.requestedBy != null &&
                     widget.requestedBy != Constant.id)
                   return Row(
@@ -68,6 +70,19 @@ class _FriendButtonState extends State<FriendButton> {
                               .read<MnageFriendrequestCubit>()
                               .manageFriendrequest(
                                   "accept", widget.userId.toString());
+                        },
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      CommonButton(
+                        // color: Colors.yellow,
+                        label: "Maybe Later",
+                        onPressed: () {
+                          context
+                              .read<MnageFriendrequestCubit>()
+                              .manageFriendrequest(
+                                  "hide", widget.userId.toString());
                         },
                       ),
                       SizedBox(
@@ -103,14 +118,24 @@ class _FriendButtonState extends State<FriendButton> {
         content: Container(
           child: Wrap(
             children: [
-              if (value != "Friend" && value != "Requested")
+              if (value != "Friend" &&
+                  value != "Requested" &&
+                  value != "Blocked" &&
+                  value != "Hidden")
                 options("Send Friend Request", Icons.person_add_alt_1, () {
                   con
                       .read<MnageFriendrequestCubit>()
                       .manageFriendrequest("add", widget.userId.toString());
                   Navigator.pop(con);
                 }),
-              if (value == "Requested")
+              if (value == "Hidden")
+                options("Accept Request", Icons.person_add, () {
+                  con
+                      .read<MnageFriendrequestCubit>()
+                      .manageFriendrequest("accept", widget.userId.toString());
+                  Navigator.pop(con);
+                }),
+              if (value == "Requested" || value == "Hidden")
                 options("Cancel Request", Icons.cancel, () {
                   con
                       .read<MnageFriendrequestCubit>()
@@ -125,18 +150,18 @@ class _FriendButtonState extends State<FriendButton> {
                       .manageFriendrequest("delete", widget.userId.toString());
                   Navigator.pop(con);
                 }),
-              if (value != "Block")
+              if (value != "Blocked")
                 options("Block", Icons.block, () {
                   con
                       .read<MnageFriendrequestCubit>()
                       .manageFriendrequest("block", widget.userId.toString());
                   Navigator.pop(con);
                 }, color: Colors.red),
-              if (value == "Block")
-                options("UnBlock", Icons.check_circle, () {
+              if (value == "Blocked")
+                options("Unblock", Icons.check_circle, () {
                   con
                       .read<MnageFriendrequestCubit>()
-                      .manageFriendrequest("unblock", widget.userId.toString());
+                      .manageFriendrequest("delete", widget.userId.toString());
                   Navigator.pop(con);
                 })
             ],

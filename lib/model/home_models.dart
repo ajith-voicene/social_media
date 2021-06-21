@@ -196,15 +196,21 @@ class User {
   final String isFriend;
   final int friendRequests;
   final int requestedUserId;
+  final int friendsCount;
+  final int followersCount;
+  final int followingCount;
   User({
-    this.requestedUserId,
-    this.createdAt,
     this.profilePhotoUrl,
     this.name,
     this.id,
     this.email,
+    this.createdAt,
     this.isFriend,
     this.friendRequests = 0,
+    this.requestedUserId,
+    this.friendsCount,
+    this.followersCount,
+    this.followingCount,
   });
 
   Map<String, dynamic> toMap() {
@@ -217,6 +223,9 @@ class User {
       'is_friend': isFriend,
       'friend_requests': friendRequests,
       'requested_user_id': requestedUserId,
+      'friends_count': friendsCount,
+      'followings_count': followingCount,
+      'followers_count': followersCount
     };
   }
 
@@ -229,7 +238,10 @@ class User {
         createdAt: map['created_at'],
         isFriend: map['is_friend'],
         friendRequests: map['friend_requests'],
-        requestedUserId: map['requested_user_id']);
+        requestedUserId: map['requested_user_id'],
+        friendsCount: map['friends_count'],
+        followingCount: map['followings_count'],
+        followersCount: map['followers_count']);
   }
 
   String toJson() => json.encode(toMap());

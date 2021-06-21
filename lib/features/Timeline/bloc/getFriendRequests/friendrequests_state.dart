@@ -21,7 +21,7 @@ class FriendrequestsError extends FriendrequestsState {
 }
 
 class FriendrequestsSuccess extends FriendrequestsState {
-  final List<User> list;
+  final TripleResponse list;
 
   FriendrequestsSuccess(this.list);
 

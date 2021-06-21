@@ -21,32 +21,77 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
     return BlocProvider<FriendrequestsCubit>(
         create: (context) => FriendrequestsCubit()..getFriendrequests(),
         child: Builder(
-            builder: (context) => Scaffold(
-                appBar: AppBar(
-                  title: Text("Friend Requests"),
-                ),
-                body: BlocBuilder<FriendrequestsCubit, FriendrequestsState>(
+            builder: (context) =>
+                BlocBuilder<FriendrequestsCubit, FriendrequestsState>(
                   builder: (con, state) {
                     if (state is FriendrequestsError)
-                      return ErrorPage(
-                        title: state.error.title,
-                        onRetry: () {
-                          con.read<FriendrequestsCubit>().getFriendrequests();
-                        },
+                      return Scaffold(
+                        appBar: AppBar(
+                          title: Text("Friend Requests"),
+                        ),
+                        body: ErrorPage(
+                          title: state.error.title,
+                          onRetry: () {
+                            con.read<FriendrequestsCubit>().getFriendrequests();
+                          },
+                        ),
                       );
                     if (state is FriendrequestsSuccess)
-                      return ListView.builder(
-                        itemBuilder: (context, index) => SearchUser(
-                          user: state.list[index],
+                      return DefaultTabController(
+                        initialIndex: 0,
+                        length: 3,
+                        child: Scaffold(
+                          appBar: AppBar(
+                            title: Text("Friend Requests"),
+                            bottom: PreferredSize(
+                              preferredSize: Size.fromHeight(50),
+                              child: TabBar(
+                                indicatorColor: Colors.white,
+                                tabs: [
+                                  Tab(
+                                    text: "Recieved",
+                                  ),
+                                  Tab(
+                                    text: "Send",
+                                  ),
+                                  Tab(
+                                    text: "Hidden",
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          body: TabBarView(children: [
+                            listView(state.list.data2),
+                            listView(state.list.data1),
+                            listView(state.list.data3)
+                          ]),
                         ),
-                        itemCount: state.list.length,
                       );
-                    return CommonFullProgressIndicator(
-                      message: "getting requests",
+                    return Scaffold(
+                      appBar: AppBar(
+                        title: Text("Friend Requests"),
+                      ),
+                      body: CommonFullProgressIndicator(
+                        message: "getting requests",
+                      ),
                     );
                   },
-                ))));
+                )));
   }
+}
+
+Widget listView(List<User> list) {
+  if (list.isEmpty)
+    return Container(
+      child: Center(child: Text("Nothing to show")),
+    );
+  return ListView.builder(
+    itemBuilder: (context, index) => SearchUser(
+      user: list[index],
+    ),
+    itemCount: list.length,
+  );
 }
 
 class SearchUser extends StatelessWidget {

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter/material.dart';
-import 'package:social_media/features/Timeline/bloc/getFriendRequests/friendrequests_cubit.dart';
 import 'package:social_media/features/profile/blocs/edit_Profile/editprofile_cubit.dart';
 import 'package:social_media/utils/alerts.dart';
 import 'package:social_media/utils/constants.dart';
@@ -11,7 +10,8 @@ import 'package:social_media/utils/constants.dart';
 import '../../../common_widgets/common_button.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key key}) : super(key: key);
+  final String name;
+  const Profile({Key key, this.name}) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -27,16 +27,10 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
-    _namecntrl = TextEditingController();
-    _usercntrl = TextEditingController();
-    getnames();
-    super.initState();
-  }
-
-  Future getnames() async {
-    name = Constant.name;
-    email = Constant.username;
+    _namecntrl = TextEditingController(text: widget.name);
+    _usercntrl = TextEditingController(text: Constant.username);
     profilePhotoUrl = Constant.photoUrl;
+    super.initState();
   }
 
   @override
@@ -131,7 +125,6 @@ class _ProfileState extends State<Profile> {
             height: 10.0,
           ),
           TextFormField(
-            enabled: false,
             controller: _namecntrl,
             keyboardType: TextInputType.text,
             maxLines: 1,
@@ -202,7 +195,7 @@ class _ProfileState extends State<Profile> {
                     if (_formKey.currentState.validate()) {
                       context
                           .read<EditprofileCubit>()
-                          .editProfile(_image, _usercntrl.text);
+                          .editProfile(_image, _namecntrl.text);
                     }
                   },
                   label: "Submit",

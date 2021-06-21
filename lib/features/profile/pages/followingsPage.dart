@@ -3,34 +3,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/common_widgets/circleAvatar.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
 import 'package:social_media/common_widgets/error_page.dart';
-import 'package:social_media/features/profile/blocs/getfrients/friendslist_cubit.dart';
+import 'package:social_media/features/profile/blocs/get_followings/getfollowings_cubit.dart';
 import 'package:social_media/model/home_models.dart';
 
 import 'user_profile.dart';
 
-class FriendsList extends StatelessWidget {
-  const FriendsList({Key key}) : super(key: key);
+class FollowingsPage extends StatelessWidget {
+  const FollowingsPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<FriendslistCubit>(
-      create: (context) => FriendslistCubit()..getfriendsList(),
+    return BlocProvider<GetfollowingsCubit>(
+      create: (context) => GetfollowingsCubit()..getFollowingsList(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Friends"),
+          title: Text("Following Users"),
         ),
         body: Builder(
-          builder: (context) => BlocBuilder<FriendslistCubit, FriendslistState>(
+          builder: (context) =>
+              BlocBuilder<GetfollowingsCubit, GetfollowingsState>(
             builder: (con, state) {
               print(state);
-              if (state is FriendslistError)
+              if (state is GetfollowingsError)
                 return ErrorPage(
                   title: state.error.title,
                   onRetry: () {
-                    con.read<FriendslistCubit>().getfriendsList();
+                    con.read<GetfollowingsCubit>().getFollowingsList();
                   },
                 );
-              if (state is FriendslistSuccess) if (state.list.isEmpty)
+              if (state is GetfollowingsSuccess) if (state.list.isEmpty)
                 return Container(
                   child: Center(child: Text("You have no friends to view")),
                 );

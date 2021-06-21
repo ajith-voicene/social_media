@@ -13,3 +13,7 @@ String getSinglePostUrl = link + "post/show/";
 String searchUserUrl = link + "search/users";
 String manageFriendUrl = link + "manage/friend";
 String getFriendRequestsUrl = link + "my/friend/requests";
+String getFollowingUrl = link + "my/followings";
+String getFollowersUrl = link + "my/followers";
+String getNotificationUrl = link + "my/notifications";
+String setNotificationReadUrl = link + "view/notification/";

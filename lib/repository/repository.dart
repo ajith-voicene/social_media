@@ -79,12 +79,20 @@ class Repository {
     return repoExecute<bool>(() => netowrk.manageFriendrequest(type, userID));
   }
 
-  Future<Either<Failure, List<User>>> getFriendrequests() {
-    return repoExecute<List<User>>(() => netowrk.getFriendrequests());
+  Future<Either<Failure, TripleResponse>> getFriendrequests() {
+    return repoExecute<TripleResponse>(() => netowrk.getFriendrequests());
   }
 
   Future<Either<Failure, List<User>>> getfriendsList() {
     return repoExecute<List<User>>(() => netowrk.getfriendsList());
+  }
+
+  Future<Either<Failure, List<User>>> getFollowingsList() {
+    return repoExecute<List<User>>(() => netowrk.getfollowingList());
+  }
+
+  Future<Either<Failure, List<User>>> getFollowersList() {
+    return repoExecute<List<User>>(() => netowrk.getfollowersList());
   }
 }
 
@@ -363,7 +371,7 @@ class RemoteNetwork {
     return success;
   }
 
-  Future<List<User>> getFriendrequests() async {
+  Future<TripleResponse> getFriendrequests() async {
     final response = await _client.get(getFriendRequestsUrl,
         options: Options(
           headers: {
@@ -372,11 +380,20 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    List<User> list = [];
+    print(response.data);
+    List<User> received = [];
     (response.data['received'] as List).forEach((element) {
-      list.add(User.fromMap(element));
+      received.add(User.fromMap(element));
     });
-    return list;
+    List<User> send = [];
+    (response.data['sent'] as List).forEach((element) {
+      send.add(User.fromMap(element));
+    });
+    List<User> hide = [];
+    (response.data['hidden'] as List).forEach((element) {
+      hide.add(User.fromMap(element));
+    });
+    return TripleResponse(send, received, hide);
   }
 
   Future<List<User>> getfriendsList() async {
@@ -388,11 +405,79 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data);
+    print(response.data['data']['data']);
+    List<User> list = [];
+    (response.data['data']['data'] as List).forEach((element) {
+      list.add(User.fromMap(element));
+    });
+    return list;
+  }
+
+  Future<List<User>> getfollowersList() async {
+    final response = await _client.get(getFollowersUrl,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    print(response.data['data']);
     List<User> list = [];
     (response.data['data'] as List).forEach((element) {
       list.add(User.fromMap(element));
     });
     return list;
+  }
+
+  Future<List<User>> getfollowingList() async {
+    final response = await _client.get(getFollowingUrl,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    print(response.data['data']);
+    List<User> list = [];
+    (response.data['data'] as List).forEach((element) {
+      list.add(User.fromMap(element));
+    });
+    return list;
+  }
+
+  Future<void> getnotifications() async {
+    final response = await _client.get(getNotificationUrl,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    print(response.data['data']);
+    // List<User> list = [];
+    (response.data['data'] as List).forEach((element) {
+      // list.add(User.fromMap(element));
+    });
+    // return list;
+  }
+
+  Future<void> setnotificationReaded(String id) async {
+    final response = await _client.get(setNotificationReadUrl + id,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    print(response.data['data']);
+    // List<User> list = [];
+    (response.data['data'] as List).forEach((element) {
+      // list.add(User.fromMap(element));
+    });
+    // return list;
   }
 }

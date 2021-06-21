@@ -8,7 +8,10 @@ import '../../../common_widgets/circleAvatar.dart';
 import '../../../common_widgets/commonLoading.dart';
 import '../../../common_widgets/error_page.dart';
 import '../blocs/get_Profile/get_profile_cubit.dart';
+import 'followersPage.dart';
+import 'followingsPage.dart';
 import 'profile.dart';
+import 'viewfriends.dart';
 
 class UserProfile extends StatelessWidget {
   final String userId;
@@ -63,10 +66,18 @@ class UserProfile extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Profile(),
+                                    builder: (context) => Profile(
+                                      name: state.user.name,
+                                    ),
                                   ));
                             },
                             child: Text("EditProfile")),
+                      if (userId == Constant.id.toString())
+                        showCounts(
+                            state.user.friendsCount,
+                            state.user.followersCount,
+                            state.user.followingCount,
+                            context),
                       if (userId != Constant.id.toString())
                         Padding(
                           padding: const EdgeInsets.only(top: 10.0),
@@ -86,8 +97,7 @@ class UserProfile extends StatelessWidget {
                       ),
                       buildCard(state.user.name, "Name"),
                       buildCard(state.user.email, "Email"),
-                      buildCard(
-                          state.user.createdAt.split("T")[0], "Created on"),
+                      buildCard(state.user.createdAt.split("T")[0], "Joined"),
                       SizedBox(
                         height: 30,
                       ),
@@ -104,6 +114,56 @@ class UserProfile extends StatelessWidget {
       ),
     );
   }
+
+  showCounts(int friends, int followers, int following, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        countCard("Friends", friends.toString(), () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FriendsList(),
+              ));
+        }),
+        countCard("Following", followers.toString(), () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FollowingsPage(),
+              ));
+        }),
+        countCard("Followers", following.toString(), () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FollowersPage(),
+              ));
+        }),
+      ],
+    );
+  }
+
+  countCard(String name, String count, VoidCallback onTap) => Padding(
+        padding: const EdgeInsets.only(right: 10.0),
+        child: InkWell(
+          onTap: onTap,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                name,
+                style: TextStyle(color: Colors.brown[800]),
+              ),
+              Text(
+                count,
+                style: TextStyle(color: Colors.blueAccent),
+              )
+            ],
+          ),
+        ),
+      );
 
   Widget buildCard(String value, String field) {
     return Padding(
