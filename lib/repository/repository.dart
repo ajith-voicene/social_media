@@ -94,6 +94,10 @@ class Repository {
   Future<Either<Failure, List<User>>> getFollowersList() {
     return repoExecute<List<User>>(() => netowrk.getfollowersList());
   }
+
+  Future<Either<Failure, bool>> manageFollow(String type, String id) {
+    return repoExecute<bool>(() => netowrk.manageFollow(type, id));
+  }
 }
 
 class RemoteNetwork {
@@ -317,7 +321,6 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data);
     User user = User.fromMap(response.data['data']);
     return user;
   }
@@ -380,7 +383,6 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data);
     List<User> received = [];
     (response.data['received'] as List).forEach((element) {
       received.add(User.fromMap(element));
@@ -405,7 +407,6 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data['data']['data']);
     List<User> list = [];
     (response.data['data']['data'] as List).forEach((element) {
       list.add(User.fromMap(element));
@@ -422,7 +423,6 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data['data']);
     List<User> list = [];
     (response.data['data'] as List).forEach((element) {
       list.add(User.fromMap(element));
@@ -439,7 +439,6 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data['data']);
     List<User> list = [];
     (response.data['data'] as List).forEach((element) {
       list.add(User.fromMap(element));
@@ -479,5 +478,22 @@ class RemoteNetwork {
       // list.add(User.fromMap(element));
     });
     // return list;
+  }
+
+  Future<bool> manageFollow(String type, String id) async {
+    // type="accept","add","reject","block","delete";
+    FormData formData = FormData.fromMap({"user_id": id, "type": type});
+    final response = await _client.post(manageFollowUrl,
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    // String msg = response.data['message'];
+    bool success = response.data['success'];
+    return success;
   }
 }

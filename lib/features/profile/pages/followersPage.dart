@@ -17,35 +17,38 @@ class FollowersPage extends StatelessWidget {
       create: (context) => GetfollowersCubit()..getFollowingsList(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Following Users"),
+          title: Text("Followers"),
         ),
         body: Builder(
-          builder: (context) =>
-              BlocBuilder<GetfollowersCubit, GetfollowersState>(
-            builder: (con, state) {
-              print(state);
-              if (state is GetfollowersError)
-                return ErrorPage(
-                  title: state.error.title,
-                  onRetry: () {
-                    con.read<GetfollowersCubit>().getFollowingsList();
-                  },
-                );
-              if (state is GetfollowersSuccess) if (state.list.isEmpty)
-                return Container(
-                  child: Center(child: Text("You have no friends to view")),
-                );
-              else
-                return ListView.builder(
-                  itemBuilder: (context, index) => UserCard(
-                    user: state.list[index],
-                  ),
-                  itemCount: state.list.length,
-                );
-              return CommonFullProgressIndicator(
-                message: "getting friends",
-              );
+          builder: (context) => RefreshIndicator(
+            onRefresh: () async {
+              context.read<GetfollowersCubit>().getFollowingsList();
             },
+            child: BlocBuilder<GetfollowersCubit, GetfollowersState>(
+              builder: (con, state) {
+                if (state is GetfollowersError)
+                  return ErrorPage(
+                    title: state.error.title,
+                    onRetry: () {
+                      con.read<GetfollowersCubit>().getFollowingsList();
+                    },
+                  );
+                if (state is GetfollowersSuccess) if (state.list.isEmpty)
+                  return Container(
+                    child: Center(child: Text("You have no friends to view")),
+                  );
+                else
+                  return ListView.builder(
+                    itemBuilder: (context, index) => UserCard(
+                      user: state.list[index],
+                    ),
+                    itemCount: state.list.length,
+                  );
+                return CommonFullProgressIndicator(
+                  message: "getting friends",
+                );
+              },
+            ),
           ),
         ),
       ),

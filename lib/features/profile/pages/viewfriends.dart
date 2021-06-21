@@ -15,36 +15,40 @@ class FriendsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<FriendslistCubit>(
       create: (context) => FriendslistCubit()..getfriendsList(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Friends"),
-        ),
-        body: Builder(
-          builder: (context) => BlocBuilder<FriendslistCubit, FriendslistState>(
-            builder: (con, state) {
-              print(state);
-              if (state is FriendslistError)
-                return ErrorPage(
-                  title: state.error.title,
-                  onRetry: () {
-                    con.read<FriendslistCubit>().getfriendsList();
-                  },
+      child: Builder(
+        builder: (context) => RefreshIndicator(
+          onRefresh: () async {
+            context.read<FriendslistCubit>().getfriendsList();
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text("Friends"),
+            ),
+            body: BlocBuilder<FriendslistCubit, FriendslistState>(
+              builder: (con, state) {
+                if (state is FriendslistError)
+                  return ErrorPage(
+                    title: state.error.title,
+                    onRetry: () {
+                      con.read<FriendslistCubit>().getfriendsList();
+                    },
+                  );
+                if (state is FriendslistSuccess) if (state.list.isEmpty)
+                  return Container(
+                    child: Center(child: Text("You have no friends to view")),
+                  );
+                else
+                  return ListView.builder(
+                    itemBuilder: (context, index) => UserCard(
+                      user: state.list[index],
+                    ),
+                    itemCount: state.list.length,
+                  );
+                return CommonFullProgressIndicator(
+                  message: "getting friends",
                 );
-              if (state is FriendslistSuccess) if (state.list.isEmpty)
-                return Container(
-                  child: Center(child: Text("You have no friends to view")),
-                );
-              else
-                return ListView.builder(
-                  itemBuilder: (context, index) => UserCard(
-                    user: state.list[index],
-                  ),
-                  itemCount: state.list.length,
-                );
-              return CommonFullProgressIndicator(
-                message: "getting friends",
-              );
-            },
+              },
+            ),
           ),
         ),
       ),

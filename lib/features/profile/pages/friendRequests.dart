@@ -40,32 +40,41 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
                       return DefaultTabController(
                         initialIndex: 0,
                         length: 3,
-                        child: Scaffold(
-                          appBar: AppBar(
-                            title: Text("Friend Requests"),
-                            bottom: PreferredSize(
-                              preferredSize: Size.fromHeight(50),
-                              child: TabBar(
-                                indicatorColor: Colors.white,
-                                tabs: [
-                                  Tab(
-                                    text: "Recieved",
-                                  ),
-                                  Tab(
-                                    text: "Send",
-                                  ),
-                                  Tab(
-                                    text: "Hidden",
-                                  )
-                                ],
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            context
+                                .read<FriendrequestsCubit>()
+                                .getFriendrequests();
+                          },
+                          child: Scaffold(
+                            appBar: AppBar(
+                              title: Text("Friend Requests"),
+                              bottom: PreferredSize(
+                                preferredSize: Size.fromHeight(50),
+                                child: TabBar(
+                                  indicatorColor: Colors.white,
+                                  tabs: [
+                                    Tab(
+                                      text: "Recieved",
+                                    ),
+                                    Tab(
+                                      text: "Send",
+                                    ),
+                                    Tab(
+                                      text: "Hidden",
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
+                            body: TabBarView(
+                                physics: AlwaysScrollableScrollPhysics(),
+                                children: [
+                                  listView(state.list.data2),
+                                  listView(state.list.data1),
+                                  listView(state.list.data3)
+                                ]),
                           ),
-                          body: TabBarView(children: [
-                            listView(state.list.data2),
-                            listView(state.list.data1),
-                            listView(state.list.data3)
-                          ]),
                         ),
                       );
                     return Scaffold(
@@ -87,6 +96,7 @@ Widget listView(List<User> list) {
       child: Center(child: Text("Nothing to show")),
     );
   return ListView.builder(
+    physics: AlwaysScrollableScrollPhysics(),
     itemBuilder: (context, index) => SearchUser(
       user: list[index],
     ),

@@ -4,13 +4,21 @@ import 'package:social_media/common_widgets/common_button.dart';
 import 'package:social_media/features/Timeline/bloc/managefriend_request/managefriendrequest_cubit.dart';
 import 'package:social_media/utils/constants.dart';
 
+import 'followButton.dart';
+
 class FriendButton extends StatefulWidget {
   final String status;
   final int userId;
+  final int isFollowing;
   final int requestedBy;
   final VoidCallback refresh;
   const FriendButton(
-      {Key key, this.status, this.userId, this.refresh, this.requestedBy})
+      {Key key,
+      this.status,
+      this.userId,
+      this.refresh,
+      this.requestedBy,
+      this.isFollowing = 0})
       : super(key: key);
 
   @override
@@ -31,13 +39,12 @@ class _FriendButtonState extends State<FriendButton> {
 
   @override
   Widget build(BuildContext context) {
+    bool isFollowing = (widget.isFollowing == 1) ? true : false;
     if (widget.status == "friend") value = "Friend";
     if (widget.status == "pending") value = "Requested";
     if (widget.status == null || widget.status == "rejected") value = null;
     if (widget.status == "blocked") value = "Blocked";
     if (widget.status == "hidden") value = "Hidden";
-    print(widget.status);
-    print(value);
     return BlocProvider<MnageFriendrequestCubit>(
       create: (context) => MnageFriendrequestCubit(),
       child: Builder(
@@ -56,6 +63,7 @@ class _FriendButtonState extends State<FriendButton> {
                   );
                 if (value != "Friend" &&
                     value != "Hidden" &&
+                    value != "Loading" &&
                     widget.status != "rejected" &&
                     widget.status != "blocked" &&
                     widget.requestedBy != null &&
@@ -101,11 +109,25 @@ class _FriendButtonState extends State<FriendButton> {
                     ],
                   );
                 else
-                  return CommonButton(
-                    label: value ?? "Add Friend",
-                    onPressed: () {
-                      showOptions(conte);
-                    },
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CommonButton(
+                        label: value ?? "Add Friend",
+                        onPressed: () {
+                          if (value != "Loading") showOptions(conte);
+                        },
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      if (value == "Friend")
+                        FollowButton(
+                          refresh: widget.refresh,
+                          isFollowing: isFollowing,
+                          userId: widget.userId,
+                        )
+                    ],
                   );
               })),
     );

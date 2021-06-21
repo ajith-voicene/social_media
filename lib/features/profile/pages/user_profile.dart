@@ -30,85 +30,92 @@ class UserProfile extends StatelessWidget {
           create: (context) => GetProfileCubit()..getProfile(userId),
         ),
       ],
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(name),
-        ),
-        resizeToAvoidBottomInset: false,
-        body: Builder(
-          builder: (context) => BlocBuilder<GetProfileCubit, GetProfileState>(
-            builder: (context, state) {
-              if (state is GetProfileError)
-                return ErrorPage(
-                  title: state.error.title,
-                  subtitle: state.error.message,
-                  onRetry: () {
-                    context.read<GetProfileCubit>().getProfile(userId);
-                  },
-                );
-              if (state is GetProfileSuccess) {
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Center(
-                          child: CommonAvatar(
-                        url: state.user.profilePhotoUrl,
-                        size: 55,
-                        onClick: null,
-                      )),
-                      if (userId == Constant.id.toString())
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Profile(
-                                      name: state.user.name,
-                                    ),
-                                  ));
-                            },
-                            child: Text("EditProfile")),
-                      if (userId == Constant.id.toString())
-                        showCounts(
-                            state.user.friendsCount,
-                            state.user.followersCount,
-                            state.user.followingCount,
-                            context),
-                      if (userId != Constant.id.toString())
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: FriendButton(
-                            requestedBy: state.user.requestedUserId,
-                            status: state.user.isFriend,
-                            userId: state.user.id,
-                            refresh: () {
-                              context
-                                  .read<GetProfileCubit>()
-                                  .getProfile(userId);
-                            },
-                          ),
+      child: Builder(
+        builder: (context) => RefreshIndicator(
+          onRefresh: () async {
+            context.read<GetProfileCubit>().getProfile(userId);
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(name),
+            ),
+            resizeToAvoidBottomInset: false,
+            body: BlocBuilder<GetProfileCubit, GetProfileState>(
+              builder: (context, state) {
+                if (state is GetProfileError)
+                  return ErrorPage(
+                    title: state.error.title,
+                    subtitle: state.error.message,
+                    onRetry: () {
+                      context.read<GetProfileCubit>().getProfile(userId);
+                    },
+                  );
+                if (state is GetProfileSuccess) {
+                  return SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 30,
                         ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      buildCard(state.user.name, "Name"),
-                      buildCard(state.user.email, "Email"),
-                      buildCard(state.user.createdAt.split("T")[0], "Joined"),
-                      SizedBox(
-                        height: 30,
-                      ),
-                    ],
-                  ),
+                        Center(
+                            child: CommonAvatar(
+                          url: state.user.profilePhotoUrl,
+                          size: 55,
+                          onClick: null,
+                        )),
+                        if (userId == Constant.id.toString())
+                          TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Profile(
+                                        name: state.user.name,
+                                      ),
+                                    ));
+                              },
+                              child: Text("EditProfile")),
+                        if (userId == Constant.id.toString())
+                          showCounts(
+                              state.user.friendsCount,
+                              state.user.followersCount,
+                              state.user.followingCount,
+                              context),
+                        if (userId != Constant.id.toString())
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: FriendButton(
+                              isFollowing: state.user.isFollowing,
+                              requestedBy: state.user.requestedUserId,
+                              status: state.user.isFriend,
+                              userId: state.user.id,
+                              refresh: () {
+                                context
+                                    .read<GetProfileCubit>()
+                                    .getProfile(userId);
+                              },
+                            ),
+                          ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        buildCard(state.user.name, "Name"),
+                        buildCard(state.user.email, "Email"),
+                        buildCard(state.user.createdAt.split("T")[0], "Joined"),
+                        SizedBox(
+                          height: 30,
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return CommonFullProgressIndicator(
+                  message: "Fetching user profile...",
                 );
-              }
-              return CommonFullProgressIndicator(
-                message: "Fetching user profile...",
-              );
-            },
+              },
+            ),
           ),
         ),
       ),
@@ -126,14 +133,14 @@ class UserProfile extends StatelessWidget {
                 builder: (context) => FriendsList(),
               ));
         }),
-        countCard("Following", followers.toString(), () {
+        countCard("Following", following.toString(), () {
           Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => FollowingsPage(),
               ));
         }),
-        countCard("Followers", following.toString(), () {
+        countCard("Followers", followers.toString(), () {
           Navigator.push(
               context,
               MaterialPageRoute(

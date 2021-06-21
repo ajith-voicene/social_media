@@ -199,6 +199,7 @@ class User {
   final int friendsCount;
   final int followersCount;
   final int followingCount;
+  final int isFollowing;
   User({
     this.profilePhotoUrl,
     this.name,
@@ -211,6 +212,7 @@ class User {
     this.friendsCount,
     this.followersCount,
     this.followingCount,
+    this.isFollowing = 0,
   });
 
   Map<String, dynamic> toMap() {
@@ -225,7 +227,8 @@ class User {
       'requested_user_id': requestedUserId,
       'friends_count': friendsCount,
       'followings_count': followingCount,
-      'followers_count': followersCount
+      'followers_count': followersCount,
+      'is_following': isFollowing
     };
   }
 
@@ -241,7 +244,8 @@ class User {
         requestedUserId: map['requested_user_id'],
         friendsCount: map['friends_count'],
         followingCount: map['followings_count'],
-        followersCount: map['followers_count']);
+        followersCount: map['followers_count'],
+        isFollowing: map['is_following']);
   }
 
   String toJson() => json.encode(toMap());

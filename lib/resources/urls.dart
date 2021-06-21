@@ -12,6 +12,7 @@ String getCommentsUrl = link + "user/timeline/comment/";
 String getSinglePostUrl = link + "post/show/";
 String searchUserUrl = link + "search/users";
 String manageFriendUrl = link + "manage/friend";
+String manageFollowUrl = link + "user/follow/action";
 String getFriendRequestsUrl = link + "my/friend/requests";
 String getFollowingUrl = link + "my/followings";
 String getFollowersUrl = link + "my/followers";
