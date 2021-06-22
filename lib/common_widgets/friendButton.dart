@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/common_widgets/common_button.dart';
 import 'package:social_media/features/Timeline/bloc/managefriend_request/managefriendrequest_cubit.dart';
+import 'package:social_media/features/messgging/pages/chat_page.dart';
 import 'package:social_media/utils/constants.dart';
 
 import 'followButton.dart';
@@ -12,13 +13,15 @@ class FriendButton extends StatefulWidget {
   final int isFollowing;
   final int requestedBy;
   final VoidCallback refresh;
+  final String username;
   const FriendButton(
       {Key key,
       this.status,
       this.userId,
       this.refresh,
       this.requestedBy,
-      this.isFollowing = 0})
+      this.isFollowing = 0,
+      this.username})
       : super(key: key);
 
   @override
@@ -126,6 +129,24 @@ class _FriendButtonState extends State<FriendButton> {
                           refresh: widget.refresh,
                           isFollowing: isFollowing,
                           userId: widget.userId,
+                        ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      if (value == "Friend")
+                        CommonButton(
+                          label: "Message",
+                          onPressed: () {
+                            print(widget.userId);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatPage(
+                                    userName: widget.username,
+                                    userId: widget.userId,
+                                  ),
+                                ));
+                          },
                         )
                     ],
                   );

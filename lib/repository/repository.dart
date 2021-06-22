@@ -98,6 +98,14 @@ class Repository {
   Future<Either<Failure, bool>> manageFollow(String type, String id) {
     return repoExecute<bool>(() => netowrk.manageFollow(type, id));
   }
+
+  Future<Either<Failure, bool>> sendMessage(String message, String userId) {
+    return repoExecute<bool>(() => netowrk.sendMessage(message, userId));
+  }
+
+  Future<Either<Failure, List<Message>>> getMessage(String userId) {
+    return repoExecute<List<Message>>(() => netowrk.getMessages(userId));
+  }
 }
 
 class RemoteNetwork {
@@ -495,5 +503,76 @@ class RemoteNetwork {
     // String msg = response.data['message'];
     bool success = response.data['success'];
     return success;
+  }
+
+  Future<bool> sendMessage(String message, String id) async {
+    // type="accept","add","reject","block","delete";
+    FormData formData =
+        FormData.fromMap({"receiver_id": id, "message": message});
+    final response = await _client.post(sendMessageUrl,
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+
+    // String msg = response.data['message'];
+    // print(response.data);
+    bool success = response.data['success'];
+    return success;
+  }
+
+  Future<bool> deleteMessage(String messageId) async {
+    // type="accept","add","reject","block","delete";
+    FormData formData = FormData.fromMap({"message_id": messageId});
+    final response = await _client.post(deleteMesssageUrl,
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    // String msg = response.data['message'];
+    bool success = response.data['success'];
+    return success;
+  }
+
+  Future<List<Message>> getMessages(String id) async {
+    final response = await _client.get(getMessagesUrl + id,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    // print(response.data['data']);
+    List<Message> list = [];
+    (response.data['data'] as List).forEach((element) {
+      list.add(Message.fromMap(element));
+    });
+    return list;
+  }
+
+  Future<List<User>> getMessageHistory() async {
+    final response = await _client.get(chatHistoryUrl,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Constant.token}'
+          },
+        ));
+    print(response.data['data']);
+    List<User> list = [];
+    (response.data['data'] as List).forEach((element) {
+      list.add(User.fromMap(element));
+    });
+    return list;
   }
 }

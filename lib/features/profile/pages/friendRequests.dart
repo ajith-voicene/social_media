@@ -21,8 +21,9 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
     return BlocProvider<FriendrequestsCubit>(
         create: (context) => FriendrequestsCubit()..getFriendrequests(),
         child: Builder(
-            builder: (context) =>
-                BlocBuilder<FriendrequestsCubit, FriendrequestsState>(
+            builder: (context) => RefreshIndicator(onRefresh: () async {
+                  context.read<FriendrequestsCubit>().getFriendrequests();
+                }, child: BlocBuilder<FriendrequestsCubit, FriendrequestsState>(
                   builder: (con, state) {
                     if (state is FriendrequestsError)
                       return Scaffold(
@@ -40,41 +41,49 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
                       return DefaultTabController(
                         initialIndex: 0,
                         length: 3,
-                        child: RefreshIndicator(
-                          onRefresh: () async {
-                            context
-                                .read<FriendrequestsCubit>()
-                                .getFriendrequests();
-                          },
-                          child: Scaffold(
-                            appBar: AppBar(
-                              title: Text("Friend Requests"),
-                              bottom: PreferredSize(
-                                preferredSize: Size.fromHeight(50),
-                                child: TabBar(
-                                  indicatorColor: Colors.white,
-                                  tabs: [
-                                    Tab(
-                                      text: "Recieved",
-                                    ),
-                                    Tab(
-                                      text: "Send",
-                                    ),
-                                    Tab(
-                                      text: "Hidden",
-                                    )
-                                  ],
-                                ),
+                        child: Scaffold(
+                          appBar: AppBar(
+                            actions: [
+                              InkWell(
+                                  onTap: () {
+                                    con
+                                        .read<FriendrequestsCubit>()
+                                        .getFriendrequests();
+                                  },
+                                  child: Icon(
+                                    Icons.refresh,
+                                    color: Colors.white,
+                                  )),
+                              SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                            title: Text("Friend Requests"),
+                            bottom: PreferredSize(
+                              preferredSize: Size.fromHeight(50),
+                              child: TabBar(
+                                indicatorColor: Colors.white,
+                                tabs: [
+                                  Tab(
+                                    text: "Recieved",
+                                  ),
+                                  Tab(
+                                    text: "Send",
+                                  ),
+                                  Tab(
+                                    text: "Hidden",
+                                  )
+                                ],
                               ),
                             ),
-                            body: TabBarView(
-                                physics: AlwaysScrollableScrollPhysics(),
-                                children: [
-                                  listView(state.list.data2),
-                                  listView(state.list.data1),
-                                  listView(state.list.data3)
-                                ]),
                           ),
+                          body: TabBarView(
+                              physics: AlwaysScrollableScrollPhysics(),
+                              children: [
+                                listView(state.list.data2),
+                                listView(state.list.data1),
+                                listView(state.list.data3)
+                              ]),
                         ),
                       );
                     return Scaffold(
@@ -86,7 +95,7 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
                       ),
                     );
                   },
-                )));
+                ))));
   }
 }
 

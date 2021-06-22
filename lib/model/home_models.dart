@@ -252,3 +252,65 @@ class User {
 
   factory User.fromJson(String source) => User.fromMap(json.decode(source));
 }
+
+class Message {
+  final int id;
+  final int senderId;
+  final int recieverId;
+  final String message;
+  final String readAt;
+  final String createdAt;
+  Message({
+    this.id,
+    this.senderId,
+    this.recieverId,
+    this.message,
+    this.readAt,
+    this.createdAt,
+  });
+
+  Message copyWith({
+    int id,
+    int senderId,
+    int recieverId,
+    String message,
+    String readAt,
+    String createdAt,
+  }) {
+    return Message(
+      id: id ?? this.id,
+      senderId: senderId ?? this.senderId,
+      recieverId: recieverId ?? this.recieverId,
+      message: message ?? this.message,
+      readAt: readAt ?? this.readAt,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'sender_id': senderId,
+      'receiver_id': recieverId,
+      'message': message,
+      'read_at': readAt,
+      'created_at': createdAt,
+    };
+  }
+
+  factory Message.fromMap(Map<String, dynamic> map) {
+    return Message(
+      id: map['id'],
+      senderId: map['sender_id'],
+      recieverId: map['receiver_id'],
+      message: map['message'],
+      readAt: map['read_at'],
+      createdAt: map['created_at'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Message.fromJson(String source) =>
+      Message.fromMap(json.decode(source));
+}

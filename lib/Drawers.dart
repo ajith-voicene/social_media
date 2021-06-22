@@ -7,6 +7,7 @@ import 'package:social_media/utils/alerts.dart';
 import 'features/Timeline/pages/Add_friends.dart';
 import 'features/auth/bloc/logout/logout_cubit.dart';
 import 'features/auth/pages/login_page.dart';
+import 'features/messgging/pages/chat_page.dart';
 import 'features/profile/pages/friendRequests.dart';
 import 'features/profile/pages/user_profile.dart';
 import 'features/profile/pages/viewfriends.dart';
@@ -61,7 +62,13 @@ class _DrawersState extends State<Drawers> {
                 MaterialPageRoute(builder: (context) => FriendsList()));
           }),
       Choice(title: 'Groups', icon: Icons.group, onClick: () {}),
-      Choice(title: 'Messages', icon: Icons.message, onClick: () {}),
+      Choice(
+          title: 'Messages',
+          icon: Icons.message,
+          onClick: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => ChatPage()));
+          }),
     ];
     return MaterialApp(
         home: Scaffold(

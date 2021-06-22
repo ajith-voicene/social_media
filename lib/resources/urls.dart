@@ -18,3 +18,7 @@ String getFollowingUrl = link + "my/followings";
 String getFollowersUrl = link + "my/followers";
 String getNotificationUrl = link + "my/notifications";
 String setNotificationReadUrl = link + "view/notification/";
+String sendMessageUrl = link + "send/message";
+String getMessagesUrl = link + "view/message/";
+String chatHistoryUrl = link + "message/history";
+String deleteMesssageUrl = link + "delete/message/";

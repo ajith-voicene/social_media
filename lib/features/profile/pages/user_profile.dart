@@ -87,6 +87,7 @@ class UserProfile extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 10.0),
                             child: FriendButton(
+                              username: state.user.name,
                               isFollowing: state.user.isFollowing,
                               requestedBy: state.user.requestedUserId,
                               status: state.user.isFriend,

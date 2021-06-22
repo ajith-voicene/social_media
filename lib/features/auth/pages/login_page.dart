@@ -60,7 +60,7 @@ class _State extends State<LoginPage> {
               child: Builder(
                 builder: (context) =>
                     BlocConsumer<SocialLoginCubit, SocialLoginState>(
-                  listener: (context, state) {
+                  listener: (context, state) async {
                     if (state is SocialLoginSuccess) {
                       if (state.success) {
                         Alerts.showToast("Succesfully logged In");
@@ -69,6 +69,14 @@ class _State extends State<LoginPage> {
                             MaterialPageRoute(
                               builder: (context) => TimeLine(),
                             ));
+                        // print(await FacebookAuth.i.accessToken);
+                        // try {
+                        //   await FacebookAuth.instance.logOut();
+
+                        //   print(await FacebookAuth.i.accessToken);
+                        // } catch (err) {
+                        //   print(err);
+                        // }
                       } else {
                         Alerts.showErrorToast("Login Failed, Try again");
                       }
