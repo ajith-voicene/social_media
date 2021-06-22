@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
 import 'package:social_media/features/messgging/bloc/get_messages/getmessage_cubit.dart';
@@ -128,10 +129,11 @@ class _ChatPageState extends State<ChatPage> {
       padding: EdgeInsets.all(5),
       // width: MediaQuery.of(context).size.width * .6,
 
-      alignment: widget.userId == sendBy
-          ? Alignment.bottomLeft
-          : Alignment.bottomRight,
+      // alignment: widget.userId == sendBy
+      //     ? Alignment.bottomLeft
+      //     : Alignment.bottomRight,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (widget.userId != sendBy) Expanded(child: Text("")),
           if (widget.userId != sendBy)
@@ -145,12 +147,17 @@ class _ChatPageState extends State<ChatPage> {
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Container(
-              // width: MediaQuery.of(context).size.width * .8,
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * .8),
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               color: widget.userId == sendBy ? Colors.grey[300] : Colors.blue,
               child: Text(
                 message,
-                style: TextStyle(color: Colors.black),
+                maxLines: null,
+                softWrap: true,
+                style: TextStyle(
+                  color: Colors.black,
+                ),
               ),
             ),
           ),
@@ -173,7 +180,7 @@ class _ChatPageState extends State<ChatPage> {
           title: TextFormField(
             minLines: 1,
             keyboardType: TextInputType.multiline,
-            maxLines: 3,
+            maxLines: 2,
             style: TextStyle(color: Colors.white),
             controller: textCont,
             decoration: InputDecoration(
