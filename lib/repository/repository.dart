@@ -106,6 +106,10 @@ class Repository {
   Future<Either<Failure, List<Message>>> getMessage(String userId) {
     return repoExecute<List<Message>>(() => netowrk.getMessages(userId));
   }
+
+  Future<Either<Failure, List<User>>> getMessageHistory() {
+    return repoExecute<List<User>>(() => netowrk.getMessageHistory());
+  }
 }
 
 class RemoteNetwork {

@@ -191,10 +191,12 @@ class _ChatPageState extends State<ChatPage> {
           trailing: InkWell(
             onTap: () {
               // sendMessage();
-              if (textCont.text != null)
+              if (textCont.text != null) {
                 co.read<SendmessageCubit>().editProfile(
                     widget.userId.toString(), textCont.text.trim());
-              textCont.clear();
+
+                textCont.clear();
+              }
             },
             child: Icon(
               Icons.send,
