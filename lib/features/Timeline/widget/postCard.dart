@@ -14,7 +14,7 @@ import 'package:social_media/utils/alerts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-import '../../../single_view.dart';
+import '../../../common_widgets/single_view.dart';
 
 class PostCard extends StatefulWidget {
   final Data data;

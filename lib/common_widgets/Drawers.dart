@@ -4,14 +4,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/common_widgets/commonLoading.dart';
 import 'package:social_media/utils/alerts.dart';
 
-import 'features/Timeline/pages/Add_friends.dart';
-import 'features/auth/bloc/logout/logout_cubit.dart';
-import 'features/auth/pages/login_page.dart';
-import 'features/messgging/pages/chat_history.dart';
-import 'features/profile/pages/friendRequests.dart';
-import 'features/profile/pages/user_profile.dart';
-import 'features/profile/pages/viewfriends.dart';
-import 'utils/constants.dart';
+import '../features/Timeline/pages/Add_friends.dart';
+import '../features/auth/bloc/logout/logout_cubit.dart';
+import '../features/auth/pages/login_page.dart';
+import '../features/messgging/pages/chat_history.dart';
+import '../features/profile/pages/friendRequests.dart';
+import '../features/profile/pages/user_profile.dart';
+import '../features/profile/pages/viewfriends.dart';
+import '../utils/constants.dart';
 
 class Drawers extends StatefulWidget {
   const Drawers({Key key}) : super(key: key);

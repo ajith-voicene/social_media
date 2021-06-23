@@ -7,4 +7,5 @@ class Constant {
   static String photoUrl;
   static String email;
   static int id;
+  static String fcmToken;
 }

@@ -122,10 +122,12 @@ class RemoteNetwork {
         options: Options(
             headers: {HttpHeaders.contentTypeHeader: 'application/json'}),
         data: jsonEncode({
+          "fcm_token": Constant.fcmToken,
           "token": token,
           "provider": Constant.provider,
           "device_name": Constant.devicename
         }));
+    print(token);
     success = response.data['success'];
     if (success) {
       Constant.token = response.data['token'];
