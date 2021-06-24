@@ -23,8 +23,6 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future<void> _firebaseBackgroundMessageHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print(" a bg message hits the app  ${message.messageId}");
-  print(message.data);
 }
 
 Future<void> main() async {

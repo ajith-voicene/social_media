@@ -127,7 +127,6 @@ class RemoteNetwork {
           "provider": Constant.provider,
           "device_name": Constant.devicename
         }));
-    print(token);
     success = response.data['success'];
     if (success) {
       Constant.token = response.data['token'];
@@ -469,12 +468,8 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data['data']);
-    // List<User> list = [];
-    (response.data['data'] as List).forEach((element) {
-      // list.add(User.fromMap(element));
-    });
-    // return list;
+
+    (response.data['data'] as List).forEach((element) {});
   }
 
   Future<void> setnotificationReaded(String id) async {
@@ -486,12 +481,8 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data['data']);
-    // List<User> list = [];
-    (response.data['data'] as List).forEach((element) {
-      // list.add(User.fromMap(element));
-    });
-    // return list;
+
+    (response.data['data'] as List).forEach((element) {});
   }
 
   Future<bool> manageFollow(String type, String id) async {
@@ -525,8 +516,6 @@ class RemoteNetwork {
           },
         ));
 
-    // String msg = response.data['message'];
-    // print(response.data);
     bool success = response.data['success'];
     return success;
   }
@@ -557,7 +546,6 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    // print(response.data['data']);
     List<Message> list = [];
     (response.data['data'] as List).forEach((element) {
       list.add(Message.fromMap(element));
@@ -574,7 +562,6 @@ class RemoteNetwork {
             'Authorization': 'Bearer ${Constant.token}'
           },
         ));
-    print(response.data['data']);
     List<User> list = [];
     (response.data['data'] as List).forEach((element) {
       list.add(User.fromMap(element));

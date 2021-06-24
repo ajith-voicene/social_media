@@ -7,6 +7,8 @@ import 'package:social_media/common_widgets/commonLoading.dart';
 import 'package:social_media/features/messgging/bloc/get_messages/getmessage_cubit.dart';
 import 'package:social_media/features/messgging/bloc/send_message/sendmessage_cubit.dart';
 import 'package:social_media/model/home_models.dart';
+import 'package:social_media/utils/alerts.dart';
+import 'package:social_media/utils/constants.dart';
 
 class ChatPage extends StatefulWidget {
   final int userId;
@@ -20,17 +22,15 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final textCont = TextEditingController();
   List<Message> messages = [];
+  Message msg;
   Timer timer;
   @override
   void dispose() {
     super.dispose();
-    print("dispose");
-    // timer.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    // int count = 20;
     return MultiBlocProvider(
       providers: [
         BlocProvider<SendmessageCubit>(
@@ -61,69 +61,65 @@ class _ChatPageState extends State<ChatPage> {
               ],
               title: Text(widget.userName),
             ),
-            body: BlocBuilder<GetmessageCubit, GetmessageState>(
-              builder: (cont, bstate) {
-                // return
-
-                // Future.delayed(Duration(seconds: 10), () {
-                //   cont
-                //       .read<GetmessageCubit>()
-                //       .getSoftMessages(widget.userId.toString());
-                // });
-                // print(state);
-                print(bstate);
-                if (bstate is GetmessageLoading) return child(bstate, context);
-                if (bstate is GetmessageSuccess) {
-                  // timer = Timer.periodic(Duration(seconds: 20), (Timer t) {
-                  //   print("reapeater");
-                  //   cont
-                  //       .read<GetmessageCubit>()
-                  //       .getSoftMessages(widget.userId.toString());
-                  // });
-                  return child(bstate, context);
+            body: BlocListener<SendmessageCubit, SendmessageState>(
+              listener: (context, state) {
+                if (state is SendmessageSuccess) {
+                  messages.insert(0, msg);
+                  msg = null;
+                  setState(() {});
                 }
-                return CommonFullProgressIndicator(
-                  message: "Loading messages",
-                );
+                if (state is SendmessageError)
+                  Alerts.showErrorToast("Message sending error");
               },
+              child: BlocConsumer<GetmessageCubit, GetmessageState>(
+                listener: (context, state) {
+                  if (state is GetmessageSuccess) {
+                    messages = state.data;
+                  }
+                },
+                builder: (cont, bstate) {
+              
+                  if (bstate is GetmessageLoading) return child(context);
+                  if (bstate is GetmessageSuccess) {
+                   
+                    return child(context);
+                  }
+                  return CommonFullProgressIndicator(
+                    message: "Loading messages",
+                  );
+                },
+              ),
             )),
       ),
     );
   }
 
-  Widget child(bstate, BuildContext co) => Stack(
-        fit: StackFit.expand,
-        children: [
-          // Container(
-          //   alignment: Alignment.topCenter,
-          //   child: Chip(
-          //     label: Text("data"),
-          //   ),
-          // ),
-          Container(
-              child: ListView.builder(
-            reverse: true,
-            itemCount: bstate.data.length,
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * .1,
-                );
-              }
-
-              return messageTile(bstate.data[index].message,
-                  bstate.data[index].senderId, bstate.data[index].createdAt);
-            },
-          )),
-          Container(
-            alignment: Alignment.bottomCenter,
-            child: bottomMessageBar(co),
-          )
-        ],
+  Widget child(BuildContext co) => SingleChildScrollView(
+        child: Column(
+          
+          children: [
+           
+            Container(
+                height: MediaQuery.of(context).size.height * .8,
+                child: ListView.builder(
+                  reverse: true,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    return messageTile(messages[index].message,
+                        messages[index].senderId, messages[index].createdAt);
+                  },
+                )),
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: bottomMessageBar(co),
+            )
+          ],
+        ),
       );
 
   messageTile(String message, int sendBy, String ts) {
-    DateTime time = DateTime.tryParse(ts);
+    DateTime time;
+    if (ts != null) time = DateTime.tryParse(ts);
     return Container(
       // color: Colors.red,
       padding: EdgeInsets.all(5),
@@ -138,7 +134,7 @@ class _ChatPageState extends State<ChatPage> {
           if (widget.userId != sendBy) Expanded(child: Text("")),
           if (widget.userId != sendBy)
             Text(
-              "${time.hour}:${time.minute}",
+              ts == null ? "justnow" : "${time.hour}:${time.minute}",
               style: TextStyle(color: Colors.grey),
             ),
           SizedBox(
@@ -192,6 +188,8 @@ class _ChatPageState extends State<ChatPage> {
             onTap: () {
               // sendMessage();
               if (textCont.text != null) {
+                msg = Message(
+                    senderId: Constant.id, message: textCont.text.trim());
                 co.read<SendmessageCubit>().editProfile(
                     widget.userId.toString(), textCont.text.trim());
 

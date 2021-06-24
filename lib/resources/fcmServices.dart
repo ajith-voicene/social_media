@@ -16,19 +16,17 @@ import 'navigator.dart';
 class PushNotificationService {
   static int getInt(String num) => int.parse(num);
   static Future onPushNotificationHandling(String payload) async {
-    Map map = jsonDecode(payload);
-    print(map);
-    if (map['page'] != null) setNavigate(map['page'], map['arguments']);
+    Map map = jsonDecode(convertToMap(payload));
+
+    if (map['page'] != null) setNavigate(map['page'], map);
   }
 
   static onNotificationHandling(RemoteMessage message) {
     RemoteNotification notification = message.notification;
     AndroidNotification androidNotification = message.notification?.android;
     if (notification != null && androidNotification != null) {
-      // print("inside block");
-      NotificationData data = NotificationData.fromMap(message.data);
-      Map map = jsonDecode(data.arguments);
-      if (data.page != null) setNavigate(data.page, map);
+      Map map = message.data;
+      if (map['page'] != null) setNavigate(map['page'], map);
     }
   }
 
@@ -85,6 +83,24 @@ class PushNotificationService {
 
       default:
     }
+  }
+
+  static String convertToMap(String payload) {
+    String map = "{";
+    String text = payload.split("{")[1];
+    text = text.split("}")[0];
+    List<String> list = text.split(",");
+    list.forEach((element) {
+      map += "\"${element.split(":")[0].trim()}\"" +
+          ":" +
+          "\"${element.split(":")[1].trim()}\",";
+    });
+
+    if (map != null && map.length > 0) {
+      map = map.substring(0, map.length - 1);
+    }
+
+    return map + "}";
   }
 }
 

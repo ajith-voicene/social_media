@@ -121,23 +121,21 @@ class _FriendButtonState extends State<FriendButton> {
                           if (value != "Loading") showOptions(conte);
                         },
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      if (value == "Friend")
+                      if (value == "Friend") ...[
+                        SizedBox(
+                          width: 10,
+                        ),
                         FollowButton(
                           refresh: widget.refresh,
                           isFollowing: isFollowing,
                           userId: widget.userId,
                         ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      if (value == "Friend")
+                        SizedBox(
+                          width: 10,
+                        ),
                         CommonButton(
                           label: "Message",
                           onPressed: () {
-                            print(widget.userId);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -148,6 +146,7 @@ class _FriendButtonState extends State<FriendButton> {
                                 ));
                           },
                         )
+                      ]
                     ],
                   );
               })),

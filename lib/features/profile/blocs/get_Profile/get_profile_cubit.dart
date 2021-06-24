@@ -10,7 +10,7 @@ class GetProfileCubit extends Cubit<GetProfileState> {
   GetProfileCubit() : super(GetProfileInitial());
   final Repository repo = Repository();
   Future getProfile(String id) async {
-    emit(GetProfileInitial());
+    // emit(GetProfileInitial());
     final result = await repo.getProfile(
       id,
     );

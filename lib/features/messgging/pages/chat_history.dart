@@ -5,6 +5,7 @@ import 'package:social_media/common_widgets/commonLoading.dart';
 import 'package:social_media/common_widgets/error_page.dart';
 import 'package:social_media/features/messgging/bloc/chatHistory/chathistory_cubit.dart';
 import 'package:social_media/features/messgging/pages/chat_page.dart';
+import 'package:social_media/features/profile/pages/user_profile.dart';
 import 'package:social_media/model/home_models.dart';
 
 class ChatHistory extends StatelessWidget {
@@ -73,6 +74,16 @@ class UserCard extends StatelessWidget {
       },
       child: ListTile(
         leading: CommonAvatar(
+          onClick: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserProfile(
+                    userId: user.id.toString(),
+                    name: user.name,
+                  ),
+                ));
+          },
           url: user.profilePhotoUrl,
         ),
         title: Text(user.name),

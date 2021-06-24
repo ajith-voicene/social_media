@@ -38,7 +38,7 @@ class _FollowButtonState extends State<FollowButton> {
                     Alerts.showErrorToast(null);
                   }
                   if (state is ManagefollowSuccess) {
-                    label = "Loading";
+                    label = (!isFollow ? "Unfollow" : "Follow");
                     widget.refresh();
                   }
                 },

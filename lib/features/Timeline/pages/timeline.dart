@@ -20,7 +20,6 @@ class _TimeLineState extends State<TimeLine> {
   void initState() {
     super.initState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("got a message");
       RemoteNotification notification = message.notification;
       AndroidNotification androidNotification = message.notification?.android;
       if (notification != null && androidNotification != null) {
@@ -41,7 +40,6 @@ class _TimeLineState extends State<TimeLine> {
       }
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("onMessageOpenedApp inside00");
       PushNotificationService.onNotificationHandling(message);
     });
   }
@@ -58,35 +56,12 @@ class _TimeLineState extends State<TimeLine> {
         length: 2,
         child: Scaffold(
           appBar: new AppBar(
-              bottom: TabBar(
-                tabs: [
-                  Tab(icon: Icon(Icons.home)),
-                  Tab(icon: Icon(Icons.menu))
-                ],
-              ),
-              title: appBarTitle,
-              centerTitle: true,
-              actions: <Widget>[
-                InkWell(
-                    onTap: () {
-                      flutterLocalNotificationsPlugin.show(
-                          0,
-                          "demo notification",
-                          "spmething",
-                          NotificationDetails(
-                              android: AndroidNotificationDetails(
-                                  channel.id, channel.name, channel.description,
-                                  color: Colors.blue,
-                                  playSound: true,
-                                  icon: "@mipmap/ic_launcher")),
-                          payload:
-                              "{page:login_page,arguments:{dataaaa:dattt}}");
-                    },
-                    child: Icon(Icons.notifications)),
-                SizedBox(
-                  width: 5,
-                )
-              ]),
+            bottom: TabBar(
+              tabs: [Tab(icon: Icon(Icons.home)), Tab(icon: Icon(Icons.menu))],
+            ),
+            title: appBarTitle,
+            centerTitle: true,
+          ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: MultiBlocProvider(
